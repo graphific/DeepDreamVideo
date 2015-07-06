@@ -5,6 +5,10 @@ Included experiment: Deep Dreaming Fear & Loathing in Las Vegas: the Great Fan F
 
 The results can be seen on youtube: https://www.youtube.com/watch?v=oyxSerkkP4o
 
+##INSTALL Dependencies
+
+A good overview (constantly being updated) on which software libraries to install & list of web resources/howto is at reddit: https://www.reddit.com/r/deepdream/comments/3cawxb/what_are_deepdream_images_how_do_i_make_my_own/
+
 
 ##Usage:
 
