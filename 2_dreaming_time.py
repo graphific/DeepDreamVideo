@@ -132,8 +132,7 @@ def main(input,output):
     frame = np.float32(PIL.Image.open( input+'/0001.jpg'))
     frame_i = 0
     for i in xrange(frame_i,2980):
-        frame = deepdream(net, frame,
-            end=layersloop[frame_i % len(layersloop)],iter_n = 5) ])
+        frame = deepdream(net, frame, end=layersloop[frame_i % len(layersloop)],iter_n = 5) ])
         saveframe=input+"/%04d.jpg"%frame_i
         PIL.Image.fromarray(np.uint8(frame)).save(saveframe)
         newframe=output+"/%04d.jpg"%frame_i
