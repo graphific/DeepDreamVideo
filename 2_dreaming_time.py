@@ -119,7 +119,7 @@ def main(input,output):
             end=layersloop[frame_i % len(layersloop)],iter_n = 5) ])
         saveframe=input+"/%04d.jpg"%frame_i
         PIL.Image.fromarray(np.uint8(frame)).save(saveframe)
-        newframe=output+"/fear%04d.jpg"%frame_i
+        newframe=output+"/%04d.jpg"%frame_i
         frame = morphPicture(saveframe, newframe)
         frame = np.float32(frame)
         frame_i += 1
