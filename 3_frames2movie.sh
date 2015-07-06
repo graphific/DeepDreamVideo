@@ -1,4 +1,4 @@
-!#/bin/bash
+#!/bin/bash
 if [ $# -eq 0 ]; then
     echo "please provide the directory of the processed frames"
     echo "./2_frames2movie [directory]"
