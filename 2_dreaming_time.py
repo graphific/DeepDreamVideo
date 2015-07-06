@@ -117,9 +117,9 @@ def main(input,output):
     for i in xrange(frame_i,2980):
         frame = deepdream(net, frame,
             end=layersloop[frame_i % len(layersloop)],iter_n = 5) ])
-        saveframe="frames4/%04d.jpg"%frame_i
+        saveframe=input+"/%04d.jpg"%frame_i
         PIL.Image.fromarray(np.uint8(frame)).save(saveframe)
-        newframe="mov/fear%04d.jpg"%frame_i
+        newframe=output+"/fear%04d.jpg"%frame_i
         frame = morphPicture(saveframe, newframe)
         frame = np.float32(frame)
         frame_i += 1
