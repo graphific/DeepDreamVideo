@@ -115,8 +115,8 @@ layersloop = ['inception_4c/output','inception_4d/output',
 
 
 def make_sure_path_exists(path):
-    ''' 
-    make sure input and output directory exist, if not create them. 
+    '''
+    make sure input and output directory exist, if not create them.
     If another error (permission denied) throw an error.
     '''
     try:
@@ -124,15 +124,15 @@ def make_sure_path_exists(path):
     except OSError as exception:
         if exception.errno != errno.EEXIST:
             raise
-        
+
 def main(input,output):
     make_sure_path_exists(input)
     make_sure_path_exists(output)
-            
-    frame = np.float32(PIL.Image.open( input+'/0001.jpg'))
+
+    frame = np.float32(PIL.Image.open(input+'/0001.jpg'))
     frame_i = 0
     for i in xrange(frame_i,2980):
-        frame = deepdream(net, frame, end=layersloop[frame_i % len(layersloop)],iter_n = 5) ])
+        frame = deepdream(net, frame, end=layersloop[frame_i % len(layersloop)],iter_n = 5)
         saveframe=input+"/%04d.jpg"%frame_i
         PIL.Image.fromarray(np.uint8(frame)).save(saveframe)
         newframe=output+"/%04d.jpg"%frame_i

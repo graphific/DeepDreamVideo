@@ -5,4 +5,5 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
+mkdir -p $2
 ffmpeg -i $1 -r 25.0 $2/%4d.jpg
