@@ -2,6 +2,8 @@
 __author__ = 'graphific'
 
 import argparse
+import os
+import errno
 
 # imports and basic notebook setup
 from cStringIO import StringIO
@@ -111,7 +113,22 @@ layersloop = ['inception_4c/output','inception_4d/output',
               'inception_4c/output']
 
 
+
+def make_sure_path_exists(path):
+    ''' 
+    make sure input and output directory exist, if not create them. 
+    If another error (permission denied) throw an error.
+    '''
+    try:
+        os.makedirs(path)
+    except OSError as exception:
+        if exception.errno != errno.EEXIST:
+            raise
+        
 def main(input,output):
+    make_sure_path_exists(input)
+    make_sure_path_exists(output)
+            
     frame = np.float32(PIL.Image.open( input+'/0001.jpg'))
     frame_i = 0
     for i in xrange(frame_i,2980):
