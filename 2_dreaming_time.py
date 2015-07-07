@@ -91,19 +91,19 @@ def deepdream(net, base_img, iter_n=10, octave_n=4, octave_scale=1.4, end='incep
     # returning the resulting image
     return deprocess(net, src.data[0])
 
-# own functions
-def morphPicture(filename1,filename2):
-    img1 = PIL.Image.open(filename1)
-    img2 = PIL.Image.open(filename2)
-    return PIL.Image.blend(img1, img2, 0.5)
+def resizePicture(image,width):
+	img = PIL.Image.open(image)
+	basewidth = width
+	wpercent = (basewidth/float(img.size[0]))
+	hsize = int((float(img.size[1])*float(wpercent)))
+	return img.resize((basewidth,hsize), PIL.Image.ANTIALIAS)
 
-layersloop = ['inception_4c/output', 'inception_4d/output',
-              'inception_4e/output', 'inception_5a/output',
-              'inception_5b/output', 'inception_5a/output',
-              'inception_4e/output', 'inception_4d/output',
-              'inception_4c/output']
-
-
+def morphPicture(filename1,filename2,blend,width):
+	img1 = PIL.Image.open(filename1)
+	img2 = PIL.Image.open(filename2)
+	if width is not 0:
+		img2 = resizePicture(filename2,width)
+	return PIL.Image.blend(img1, img2, blend)
 
 def make_sure_path_exists(path):
     '''
@@ -116,7 +116,12 @@ def make_sure_path_exists(path):
         if exception.errno != errno.EEXIST:
             raise
 
-def main(input, output, disp, gpu, model_path, model_name):
+layersloop = ['inception_4c/output', 'inception_4d/output',
+              'inception_4e/output', 'inception_5a/output',
+              'inception_5b/output', 'inception_5a/output',
+              'inception_4e/output', 'inception_4d/output',
+              'inception_4c/output']
+def main(input, output, disp, gpu, model_path, model_name, preview, octaves, octave_scale, iterations, jitter, zoom, stepsize, blend, layers):
     make_sure_path_exists(input)
     make_sure_path_exists(output)
     
@@ -125,6 +130,16 @@ def main(input, output, disp, gpu, model_path, model_name):
     if nrframes == 0:
         print("no frames to process found")
         sys.exit(0)
+    
+    if preview is None: preview = 0
+    if octaves is None: octaves = 4
+    if octave_scale is None: octave_scale = 1.5
+    if iterations is None: iterations = 5
+    if jitter is None: jitter = 32
+    if zoom is None: zoom = 1
+    if stepsize is None: stepsize = 1.5
+    if blend is None: blend = 0.5
+    if layers is None: layers = 'customloop' #['inception_4c/output']
     
     #Load DNN
     net_fn   = model_path + 'deploy.prototxt'
@@ -153,6 +168,8 @@ def main(input, output, disp, gpu, model_path, model_name):
         print("display turned on")
         
     frame = np.float32(PIL.Image.open(input+'/0001.jpg'))
+    if preview is not 0:
+        frame = resizePicture(input+'/0001.jpg',preview)
     frame_i = 1
     
     now = time.time()
@@ -160,8 +177,17 @@ def main(input, output, disp, gpu, model_path, model_name):
     for i in xrange(frame_i,nrframes):
         print('Processing frame #{}').format(frame_i)
         
-        frame = deepdream(
-            net, frame, end = layersloop[frame_i % len(layersloop)], disp=disp, iter_n=5)
+        if layers == 'customloop': #loop over layers as set in layersloop array
+            endparam = layersloop[frame_i % len(layersloop)]
+            frame = deepdream(
+                net, frame, iter_n = iterations, step_size = stepsize, octave_n = octaves, octave_scale = octave_scale, 
+                jitter=jitter, end = endparam)
+        else: #loop through layers one at a time until this specific layer
+            endparam = layers[frame_i % len(layers)]
+            frame = deepdream(
+                net, frame, iter_n = iterations, step_size = stepsize, octave_n = octaves, octave_scale = octave_scale, 
+                jitter=jitter, end = endparam)
+
         saveframe = output + "/%04d.jpg" % frame_i
         
         later = time.time()
@@ -179,7 +205,15 @@ def main(input, output, disp, gpu, model_path, model_name):
         
         PIL.Image.fromarray(np.uint8(frame)).save(saveframe)
         newframe = input + "/%04d.jpg" % frame_i
-        frame = morphPicture(saveframe, newframe) # give it back 50% of original picture
+        
+        if blend == 0:
+            newimg = PIL.Image.open(newframe)
+            if preview is not 0:
+                newimg = resizePicture(newframe,preview)
+            frame = newimg
+        else:
+            frame = morphPicture(saveframe,newframe,blend,preview)
+                
         frame = np.float32(frame)
         
         now = time.time()
@@ -197,10 +231,31 @@ if __name__ == "__main__":
     parser.add_argument(
         '-g', '--gpu', help='Use GPU', action='store_false', dest='gpu')
     parser.add_argument(
-        '-p', '--model_path', help='Model directory to use', dest='model_path', default='../caffe/models/bvlc_googlenet/')
+        '-t', '--model_path', help='Model directory to use', dest='model_path', default='../caffe/models/bvlc_googlenet/')
     parser.add_argument(
         '-m', '--model_name', help='Caffe Model name to use', dest='model_name', default='bvlc_googlenet.caffemodel')
-        
+    
+    #tnx samim:
+    parser.add_argument(
+        '-p','--preview',help='Preview image width. Default: 0', type=int, required=False)
+    parser.add_argument(
+        '-oct','--octaves',help='Octaves. Default: 4', type=int, required=False)
+    parser.add_argument(
+        '-octs','--octavescale',help='Octave Scale. Default: 1.4', type=float, required=False)
+    parser.add_argument(
+        '-itr','--iterations',help='Iterations. Default: 10', type=int, required=False)
+    parser.add_argument(
+        '-j','--jitter',help='Jitter. Default: 32', type=int, required=False)
+    parser.add_argument(
+        '-z','--zoom',help='Zoom in Amount. Default: 1', type=int, required=False)
+    parser.add_argument(
+        '-s','--stepsize',help='Step Size. Default: 1.5', type=float, required=False)
+    parser.add_argument(
+        '-b','--blend',help='Blend Amount. Default: 0.5', type=float, required=False)
+    parser.add_argument(
+        '-l','--layers',help='Array of Layers to loop through. Default: [customloop] \
+        - or choose ie [inception_4c/output] for that single layer', nargs="+", type=str, required=False)
+    
     args = parser.parse_args()
     
     if not args.model_path[-1] == '/':
@@ -219,5 +274,7 @@ if __name__ == "__main__":
         print("or download one with ./caffe_dir/scripts/download_model_binary.py caffe_dir/models/bvlc_googlenet")
         sys.exit(0)
 
-    main(args.input, args.output, args.display, args.gpu, args.model_path, args.model_name)
+    main(
+        args.input, args.output, args.display, args.gpu, args.model_path, args.model_name, 
+        args.preview, args.octaves, args.octavescale, args.iterations, args.jitter, args.zoom, args.stepsize, args.blend, args.layers)
 
