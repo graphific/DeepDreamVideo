@@ -5,6 +5,7 @@ import argparse
 import os, os.path
 import errno
 import sys
+import time
 
 # imports and basic notebook setup
 from cStringIO import StringIO
@@ -153,15 +154,35 @@ def main(input, output, disp, gpu, model_path, model_name):
         
     frame = np.float32(PIL.Image.open(input+'/0001.jpg'))
     frame_i = 1
-
+    
+    now = time.time()
+    
     for i in xrange(frame_i,nrframes):
+        print('Processing frame #{}').format(frame_i)
+        
         frame = deepdream(
             net, frame, end = layersloop[frame_i % len(layersloop)], disp=disp, iter_n=5)
         saveframe = output + "/%04d.jpg" % frame_i
+        
+        later = time.time()
+        difference = int(later - now)
+        # Stats (stolen + adapted from Samim: https://github.com/samim23/DeepDreamAnim/blob/master/dreamer.py)
+        print '***************************************'
+        print 'Saving Image As: ' + saveframe
+        print 'Frame ' + str(i) + ' of ' + str(nrframes)
+        print 'Frame Time: ' + str(difference) + 's' 
+        timeleft = difference * (nrframes - frame_i)
+        m, s = divmod(timeleft, 60)
+        h, m = divmod(m, 60)
+        print 'Estimated Total Time Remaining: ' + str(timeleft) + 's (' + "%d:%02d:%02d" % (h, m, s) + ')' 
+        print '***************************************'
+        
         PIL.Image.fromarray(np.uint8(frame)).save(saveframe)
         newframe = input + "/%04d.jpg" % frame_i
         frame = morphPicture(saveframe, newframe) # give it back 50% of original picture
         frame = np.float32(frame)
+        
+        now = time.time()
         frame_i += 1
 
 
