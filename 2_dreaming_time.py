@@ -137,6 +137,10 @@ def main(input, output, disp, gpu):
     if gpu:
         caffe.set_mode_gpu();
         caffe.set_device(0);
+    
+    if disp:
+        from IPython.display import clear_output, Image, display
+        print("display turned on")
         
     frame = np.float32(PIL.Image.open(input+'/0001.jpg'))
     frame_i = 1
@@ -166,9 +170,6 @@ if __name__ == "__main__":
     parser.add_argument(
         '-g', '--gpu', help='Use GPU', action='store_true', dest='gpu')
     args = parser.parse_args()
-    
-    if args.display:
-        print("display turned on")
 
     main(args.input, args.output, args.display, args.gpu)
 
