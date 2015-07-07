@@ -1,7 +1,7 @@
 #!/bin/bash
 if [ $# -ne 2 ]; then
     echo "please provide the directory of the processed frames"
-    echo "./2_frames2movie [frames_directory] [original_video_with_sound]"
+    echo "./3_frames2movie.sh [frames_directory] [original_video_with_sound]"
     exit 1
 fi
 
