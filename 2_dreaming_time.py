@@ -128,7 +128,7 @@ def make_sure_path_exists(path):
         if exception.errno != errno.EEXIST:
             raise
 
-def main(input,output,disp=False,gpu):
+def main(input, output, disp, gpu):
     make_sure_path_exists(input)
     make_sure_path_exists(output)
 
@@ -162,7 +162,7 @@ if __name__ == "__main__":
     parser.add_argument(
         '-o','--output', help='Output directory where processed frames are to be stored', required=True)
     parser.add_argument(
-        '-d', '--display', help='display frames')
+        '-d', '--display', help='display frames', action='store_false', dest='display')
     parser.add_argument(
         '-g', '--gpu', help='Use GPU', action='store_true', dest='gpu')
     args = parser.parse_args()
