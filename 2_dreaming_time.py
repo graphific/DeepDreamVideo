@@ -14,6 +14,7 @@ from google.protobuf import text_format
 from IPython.display import clear_output, Image, display
 
 import caffe
+caffe.set_mode_gpu()
 
 
 def showarray(a, fmt='jpeg'):
