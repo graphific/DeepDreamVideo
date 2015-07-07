@@ -21,7 +21,8 @@ A good overview (constantly being updated) on which software libraries to instal
 
 Extract 25 frames a second from the source movie
 
-`./1_movie2frames.sh input.mp4 frames`
+`./1_movie2frames [ffmpeg|avconv] [movie.mp4] [directory]`
+
 
 Let a pretrained deep neural network dream on it frames, one by one, taking each new frame and adding 0-50% of the old frame into it for continuity of the hallucinated artifacts, and go drink your caffe
 
