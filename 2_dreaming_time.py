@@ -2,7 +2,7 @@
 __author__ = 'graphific'
 
 import argparse
-import os
+import os, os.path
 import errno
 
 # imports and basic notebook setup
@@ -13,6 +13,7 @@ import PIL.Image
 from google.protobuf import text_format
 
 import caffe
+
 
 def showarray(a, fmt='jpeg'):
     a = np.uint8(np.clip(a, 0, 255))
@@ -51,7 +52,7 @@ def make_step(net, step_size=1.5, end='inception_4c/output', jitter=32, clip=Tru
     src = net.blobs['data'] # input image is stored in Net's 'data' blob
     dst = net.blobs[end]
 
-    ox, oy = np.random.randint(-jitter, jitter+1, 2)
+    ox, oy = np.random.randint(-jitter, jitter + 1, 2)
     src.data[0] = np.roll(np.roll(src.data[0], ox, -1), oy, -2) # apply jitter shift
 
     net.forward(end=end)
@@ -59,7 +60,7 @@ def make_step(net, step_size=1.5, end='inception_4c/output', jitter=32, clip=Tru
     net.backward(start=end)
     g = src.diff[0]
     # apply normalized ascent step to the input image
-    src.data[:] += step_size/np.abs(g).mean() * g
+    src.data[:] += step_size / np.abs(g).mean() * g
 
     src.data[0] = np.roll(np.roll(src.data[0], -ox, -1), -oy, -2) # unshift image
 
@@ -70,8 +71,8 @@ def make_step(net, step_size=1.5, end='inception_4c/output', jitter=32, clip=Tru
 def deepdream(net, base_img, iter_n=10, octave_n=4, octave_scale=1.4, end='inception_4c/output', disp=False, clip=True, **step_params):
     # prepare base images for all octaves
     octaves = [preprocess(net, base_img)]
-    for i in xrange(octave_n-1):
-        octaves.append(nd.zoom(octaves[-1], (1, 1.0/octave_scale,1.0/octave_scale), order=1))
+    for i in xrange(octave_n - 1):
+        octaves.append(nd.zoom(octaves[-1], (1, 1.0 / octave_scale, 1.0 / octave_scale), order=1))
 
     src = net.blobs['data']
     detail = np.zeros_like(octaves[-1]) # allocate image for network-produced details
@@ -80,7 +81,7 @@ def deepdream(net, base_img, iter_n=10, octave_n=4, octave_scale=1.4, end='incep
         if octave > 0:
             # upscale details from the previous octave
             h1, w1 = detail.shape[-2:]
-            detail = nd.zoom(detail, (1, 1.0*h/h1,1.0*w/w1), order=1)
+            detail = nd.zoom(detail, (1, 1.0 * h / h1, 1.0 * w / w1), order=1)
 
         src.reshape(1,3,h,w) # resize the network's input image size
         src.data[0] = octave_base+detail
@@ -90,7 +91,7 @@ def deepdream(net, base_img, iter_n=10, octave_n=4, octave_scale=1.4, end='incep
             # visualization
             vis = deprocess(net, src.data[0])
             if not clip: # adjust image contrast if clipping is disabled
-                vis = vis*(255.0/np.percentile(vis, 99.98))
+                vis = vis * (255.0 / np.percentile(vis, 99.98))
             if disp:
                 showarray(vis)
             print octave, i, end, vis.shape
@@ -108,10 +109,10 @@ def morphPicture(filename1,filename2):
     img2 = PIL.Image.open(filename2)
     return PIL.Image.blend(img1, img2, 0.5)
 
-layersloop = ['inception_4c/output','inception_4d/output',
+layersloop = ['inception_4c/output', 'inception_4d/output',
               'inception_4e/output', 'inception_5a/output',
-              'inception_5b/output','inception_5a/output',
-              'inception_4e/output','inception_4d/output',
+              'inception_5b/output', 'inception_5a/output',
+              'inception_4e/output', 'inception_4d/output',
               'inception_4c/output']
 
 
@@ -127,17 +128,28 @@ def make_sure_path_exists(path):
         if exception.errno != errno.EEXIST:
             raise
 
-def main(input,output,disp=False):
+def main(input,output,disp=False,gpu):
     make_sure_path_exists(input)
     make_sure_path_exists(output)
 
+    # should be picked up by caffe by default, but just in case
+    # add by macpod
+    if gpu:
+        caffe.set_mode_gpu();
+        caffe.set_device(0);
+        
     frame = np.float32(PIL.Image.open(input+'/0001.jpg'))
     frame_i = 1
-    for i in xrange(frame_i,2980):
-        frame = deepdream(net, frame, end=layersloop[frame_i % len(layersloop)], disp=disp, iter_n = 5)
-        saveframe=output+"/%04d.jpg"%frame_i
+    
+    # let max nr of frames
+    nrframes =len([name for name in os.listdir('./input') if os.path.isfile(name)])
+
+    for i in xrange(frame_i,nrframes):
+        frame = deepdream(
+            net, frame, end = layersloop[frame_i % len(layersloop)], disp=disp, iter_n=5)
+        saveframe = output + "/%04d.jpg" % frame_i
         PIL.Image.fromarray(np.uint8(frame)).save(saveframe)
-        newframe=input+"/%04d.jpg"%frame_i
+        newframe = input + "/%04d.jpg" % frame_i
         frame = morphPicture(saveframe, newframe) # give it back 50% of original picture
         frame = np.float32(frame)
         frame_i += 1
@@ -145,13 +157,18 @@ def main(input,output,disp=False):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Dreaming in videos.')
-    parser.add_argument('-i','--input', help='Input directory where extracted frames are stored',required=True)
-    parser.add_argument('-o','--output',help='Output directory where processed frames are to be stored', required=True)
-    parser.add_argument('-d', '--display',help='display frames')
+    parser.add_argument(
+        '-i','--input', help='Input directory where extracted frames are stored', required=True)
+    parser.add_argument(
+        '-o','--output', help='Output directory where processed frames are to be stored', required=True)
+    parser.add_argument(
+        '-d', '--display', help='display frames')
+    parser.add_argument(
+        '-g', '--gpu', help='Use GPU', action='store_true', dest='gpu')
     args = parser.parse_args()
     
     if args.display:
         print("display turned on")
 
-    main(args.input, args.output, args.display)
+    main(args.input, args.output, args.display, args.gpu)
 
