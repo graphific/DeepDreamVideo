@@ -6,6 +6,7 @@ Included experiment: Deep Dreaming Fear & Loathing in Las Vegas: the Great Fan F
 The results can be seen on youtube: https://www.youtube.com/watch?v=oyxSerkkP4o
 
 (mp4 not yet fucked by youtube compression also at [mega.nz](https://mega.nz/#!7pFxHZia!ddzIDOoSQTi0r8h17UsHa6GGtX3nxC-QxgOf7Of5m_g))
+(original unprocessed mp4 at [mega.nz](https://mega.nz/#!X9MWWDTQ!lbC7C5B4incMkLGVM00qwI4NP-ifi2KcqsmfsdIm_E0))
 
 ![deepdreamanim1](http://media.giphy.com/media/l41lRx92QqsIXy5MI/giphy.gif "deep dream animation 1")
 ![deepdreamanim2](http://media.giphy.com/media/l41lSzjTsGJcIzpKg/giphy.gif "deep dream animation 2")
