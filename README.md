@@ -5,6 +5,11 @@ Included experiment: Deep Dreaming Fear & Loathing in Las Vegas: the Great Fan F
 
 The results can be seen on youtube: https://www.youtube.com/watch?v=oyxSerkkP4o
 
+(mp4 not yet fucked by youtube compression also at [mega.nz](https://mega.nz/#!7pFxHZia!ddzIDOoSQTi0r8h17UsHa6GGtX3nxC-QxgOf7Of5m_g))
+
+![deepdreamanim1](http://media.giphy.com/media/l41lRx92QqsIXy5MI/giphy.gif "deep dream animation 1")
+![deepdreamanim2](http://media.giphy.com/media/l41lSzjTsGJcIzpKg/giphy.gif "deep dream animation 2")
+
 ##INSTALL Dependencies
 
 A good overview (constantly being updated) on which software libraries to install & list of web resources/howto is at reddit: https://www.reddit.com/r/deepdream/comments/3cawxb/what_are_deepdream_images_how_do_i_make_my_own/
@@ -14,15 +19,15 @@ A good overview (constantly being updated) on which software libraries to instal
 
 Extract 25 frames a second from the source movie
 
-- ./1_movie2frames.sh input.mp4 frames
+`./1_movie2frames.sh input.mp4 frames`
 
 Let a pretrained deep neural network dream on it frames, one by one, taking each new frame and adding 0-50% of the old frame into it for continuity of the hallucinated artifacts, and go drink your caffe
 
-- ./2_dreaming_time.py -i frames -o processed
+`./2_dreaming_time.py -i frames -o processed`
 
 Once enough frames are processed (the script will cut the audio to the needed length automatically) or once all frames are done, put the frames + audio back together:
 
-- ./3_frames2movies.sh processed
+`./3_frames2movies.sh processed`
 
 
 ##More information:
