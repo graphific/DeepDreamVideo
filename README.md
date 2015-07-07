@@ -37,7 +37,7 @@ or if all fails (so many different environments you're all using!)
 
 Once enough frames are processed (the script will cut the audio to the needed length automatically) or once all frames are done, put the frames + audio back together:
 
-`./3_frames2movies.sh processed`
+`./3_frames2movie.sh [frames_directory] [original_video_with_sound]`
 
 
 ##More information:
