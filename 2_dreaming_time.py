@@ -4,6 +4,7 @@ __author__ = 'graphific'
 import argparse
 import os, os.path
 import errno
+import sys
 
 # imports and basic notebook setup
 from cStringIO import StringIO
@@ -22,21 +23,7 @@ def showarray(a, fmt='jpeg'):
     display(Image(data=f.getvalue()))
 
 
-#Load DNN
-model_path = 'caffe/models/bvlc_googlenet/' # substitute your path here
-net_fn   = model_path + 'deploy.prototxt'
-param_fn = model_path + 'bvlc_googlenet.caffemodel'
 
-# Patching model to be able to compute gradients.
-# Note that you can also manually add "force_backward: true" line to "deploy.prototxt".
-model = caffe.io.caffe_pb2.NetParameter()
-text_format.Merge(open(net_fn).read(), model)
-model.force_backward = True
-open('tmp.prototxt', 'w').write(str(model))
-
-net = caffe.Classifier('tmp.prototxt', param_fn,
-                       mean = np.float32([104.0, 116.0, 122.0]), # ImageNet mean, training set dependent
-                       channel_swap = (2,1,0)) # the reference model has channels in BGR order instead of RGB
 
 # a couple of utility functions for converting to and from Caffe's input image layout
 def preprocess(net, img):
@@ -94,7 +81,7 @@ def deepdream(net, base_img, iter_n=10, octave_n=4, octave_scale=1.4, end='incep
                 vis = vis * (255.0 / np.percentile(vis, 99.98))
             if disp:
                 showarray(vis)
-            print octave, i, end, vis.shape
+            print(octave, i, end, vis.shape)
             if disp:
                 clear_output(wait=True)
 
@@ -128,10 +115,31 @@ def make_sure_path_exists(path):
         if exception.errno != errno.EEXIST:
             raise
 
-def main(input, output, disp, gpu):
+def main(input, output, disp, gpu, model_path, model_name):
     make_sure_path_exists(input)
     make_sure_path_exists(output)
-
+    
+     # let max nr of frames
+    nrframes =len([name for name in os.listdir(input) if os.path.isfile(os.path.join(input, name))])
+    if nrframes == 0:
+        print("no frames to process found")
+        sys.exit(0)
+    
+    #Load DNN
+    net_fn   = model_path + 'deploy.prototxt'
+    param_fn = model_path + model_name #'bvlc_googlenet.caffemodel'
+    
+    # Patching model to be able to compute gradients.
+    # Note that you can also manually add "force_backward: true" line to "deploy.prototxt".
+    model = caffe.io.caffe_pb2.NetParameter()
+    text_format.Merge(open(net_fn).read(), model)
+    model.force_backward = True
+    open('tmp.prototxt', 'w').write(str(model))
+    
+    net = caffe.Classifier('tmp.prototxt', param_fn,
+                           mean = np.float32([104.0, 116.0, 122.0]), # ImageNet mean, training set dependent
+                           channel_swap = (2,1,0)) # the reference model has channels in BGR order instead of RGB
+                           
     # should be picked up by caffe by default, but just in case
     # add by macpod
     if gpu:
@@ -144,10 +152,7 @@ def main(input, output, disp, gpu):
         
     frame = np.float32(PIL.Image.open(input+'/0001.jpg'))
     frame_i = 1
-    
-    # let max nr of frames
-    nrframes =len([name for name in os.listdir(input) if os.path.isfile(os.path.join(input, name))])
-    
+
     for i in xrange(frame_i,nrframes):
         frame = deepdream(
             net, frame, end = layersloop[frame_i % len(layersloop)], disp=disp, iter_n=5)
@@ -169,7 +174,28 @@ if __name__ == "__main__":
         '-d', '--display', help='display frames', action='store_true', dest='display')
     parser.add_argument(
         '-g', '--gpu', help='Use GPU', action='store_true', dest='gpu')
+    parser.add_argument(
+        '-p', '--model_path', help='Model directory to use', dest='model_path', default='../caffe/models/bvlc_googlenet/')
+    parser.add_argument(
+        '-m', '--model_name', help='Caffe Model name to use', dest='model_name', default='bvlc_googlenet.caffemodel')
+        
     args = parser.parse_args()
+    
+    if not args.model_path[-1] == '/':
+        args.model_path = args.model_path + '/'
+        
+    if not os.path.exists(args.model_path):
+        print("Model directory not found")
+        print("Please set the model_path to a correct caffe model directory")
+        sys.exit(0)
+    
+    model = os.path.join(args.model_path, args.model_name)
+    
+    if not os.path.exists(model):
+        print("Model not found")
+        print("Please set the model_name to a correct caffe model")
+        print("or download one with ./caffe_dir/scripts/download_model_binary.py caffe_dir/models/bvlc_googlenet")
+        sys.exit(0)
 
-    main(args.input, args.output, args.display, args.gpu)
+    main(args.input, args.output, args.display, args.gpu, args.model_path, args.model_name)
 
