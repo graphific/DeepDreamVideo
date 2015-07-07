@@ -142,8 +142,8 @@ def main(input, output, disp, gpu):
     frame_i = 1
     
     # let max nr of frames
-    nrframes =len([name for name in os.listdir('./input') if os.path.isfile(name)])
-
+    nrframes =len([name for name in os.listdir(input) if os.path.isfile(os.path.join(input, name))])
+    
     for i in xrange(frame_i,nrframes):
         frame = deepdream(
             net, frame, end = layersloop[frame_i % len(layersloop)], disp=disp, iter_n=5)
