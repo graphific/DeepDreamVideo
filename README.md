@@ -80,5 +80,6 @@ https://www.youtube.com/watch?v=6IgbMiEaFRY
 - or using lasagne: http://www.slideshare.net/roelofp/python-for-image-understanding-deep-learning-with-convolutional-neural-nets
 
 
-Enjoy!
-Roelof
+## Credits
+
+Roelof | [KTH](www.csc.kth.se/~roelof/) & [Graph Technologies](http://www.graph-technologies.com/) | [@graphific](https://twitter.com/graphific)
