@@ -143,6 +143,7 @@ def main(input, output, disp, gpu, model_path, model_name):
     # should be picked up by caffe by default, but just in case
     # add by macpod
     if gpu:
+        print("using GPU, but you'd still better make a cup of coffee")
         caffe.set_mode_gpu();
         caffe.set_device(0);
     
@@ -173,7 +174,7 @@ if __name__ == "__main__":
     parser.add_argument(
         '-d', '--display', help='display frames', action='store_true', dest='display')
     parser.add_argument(
-        '-g', '--gpu', help='Use GPU', action='store_true', dest='gpu')
+        '-g', '--gpu', help='Use GPU', action='store_false', dest='gpu')
     parser.add_argument(
         '-p', '--model_path', help='Model directory to use', dest='model_path', default='../caffe/models/bvlc_googlenet/')
     parser.add_argument(
