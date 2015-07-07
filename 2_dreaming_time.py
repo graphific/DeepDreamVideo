@@ -166,7 +166,7 @@ if __name__ == "__main__":
     parser.add_argument(
         '-o','--output', help='Output directory where processed frames are to be stored', required=True)
     parser.add_argument(
-        '-d', '--display', help='display frames', action='store_false', dest='display')
+        '-d', '--display', help='display frames', action='store_true', dest='display')
     parser.add_argument(
         '-g', '--gpu', help='Use GPU', action='store_true', dest='gpu')
     args = parser.parse_args()
