@@ -67,7 +67,7 @@ def make_step(net, step_size=1.5, end='inception_4c/output', jitter=32, clip=Tru
         bias = net.transformer.mean['data']
         src.data[:] = np.clip(src.data, -bias, 255-bias)
 
-def deepdream(net, base_img, iter_n=10, octave_n=4, octave_scale=1.4, end='inception_4c/output', clip=True, **step_params):
+def deepdream(net, base_img, iter_n=10, octave_n=4, octave_scale=1.4, end='inception_4c/output', disp=False, clip=True, **step_params):
     # prepare base images for all octaves
     octaves = [preprocess(net, base_img)]
     for i in xrange(octave_n-1):
@@ -91,9 +91,11 @@ def deepdream(net, base_img, iter_n=10, octave_n=4, octave_scale=1.4, end='incep
             vis = deprocess(net, src.data[0])
             if not clip: # adjust image contrast if clipping is disabled
                 vis = vis*(255.0/np.percentile(vis, 99.98))
-            showarray(vis)
+            if disp:
+                showarray(vis)
             print octave, i, end, vis.shape
-            clear_output(wait=True)
+            if disp:
+                clear_output(wait=True)
 
         # extract details produced on the current octave
         detail = src.data[0]-octave_base
@@ -125,14 +127,14 @@ def make_sure_path_exists(path):
         if exception.errno != errno.EEXIST:
             raise
 
-def main(input,output):
+def main(input,output,disp=False):
     make_sure_path_exists(input)
     make_sure_path_exists(output)
 
     frame = np.float32(PIL.Image.open(input+'/0001.jpg'))
     frame_i = 1
     for i in xrange(frame_i,2980):
-        frame = deepdream(net, frame, end=layersloop[frame_i % len(layersloop)],iter_n = 5)
+        frame = deepdream(net, frame, end=layersloop[frame_i % len(layersloop)], disp=disp, iter_n = 5)
         saveframe=output+"/%04d.jpg"%frame_i
         PIL.Image.fromarray(np.uint8(frame)).save(saveframe)
         newframe=input+"/%04d.jpg"%frame_i
@@ -145,7 +147,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Dreaming in videos.')
     parser.add_argument('-i','--input', help='Input directory where extracted frames are stored',required=True)
     parser.add_argument('-o','--output',help='Output directory where processed frames are to be stored', required=True)
+    parser.add_argument('-d', '--display',help='display frames')
     args = parser.parse_args()
+    
+    if args.display:
+        print("display turned on")
 
-    main(args.input, args.output)
+    main(args.input, args.output, args.display)
 
