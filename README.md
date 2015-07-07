@@ -25,6 +25,13 @@ Extract 25 frames a second from the source movie
 
 Let a pretrained deep neural network dream on it frames, one by one, taking each new frame and adding 0-50% of the old frame into it for continuity of the hallucinated artifacts, and go drink your caffe
 
+python:
+`python 2_dreaming_time.py -i frames -o processed`
+
+or using ipython:
+`ipython 2_dreaming_time.py -i frames -o processed`
+
+or if all fails (so many different environments you're all using!)
 `./2_dreaming_time.py -i frames -o processed`
 
 Once enough frames are processed (the script will cut the audio to the needed length automatically) or once all frames are done, put the frames + audio back together:
