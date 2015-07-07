@@ -1,5 +1,5 @@
 #!/bin/bash
-if [ $# -eq 0 ]; then
+if [ $# -ne 3 ]; then
     echo "please provide the moviename and directory where to store the frames"
     echo "./1_movie2frames [ffmpeg|avconv] [movie.mp4] [directory]"
     exit 1
