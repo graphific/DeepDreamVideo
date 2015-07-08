@@ -1,6 +1,10 @@
 # DeepDreamVideo
 Implementing **#deepdream** on video
 
+**Creative Request**
+
+It would be very helpful for other deepdream researchers, if you could **include the used parameters in the description of your youtube videos**. You can find the parameters in the image filenames.
+
 Included experiment: Deep Dreaming Fear & Loathing in Las Vegas: the Great Fan Francisco Acid Wave
 
 The results can be seen on youtube: https://www.youtube.com/watch?v=oyxSerkkP4o
