@@ -28,6 +28,7 @@ Extract 25 frames a second from the source movie
 `./1_movie2frames.sh ffmpeg [movie.mp4] [directory]`
 
 or
+
 `./1_movie2frames.sh avconf [movie.mp4] [directory]`
 
 Let a pretrained deep neural network dream on it frames, one by one, taking each new frame and adding 0-50% of the old frame into it for continuity of the hallucinated artifacts, and go drink your caffe
