@@ -1,6 +1,10 @@
 # DeepDreamVideo
 Implementing **#deepdream** on video
 
+**Creative Request**
+
+It would be very helpful for other deepdream researchers, if you could **include the used parameters in the description of your youtube videos**. You can find the parameters in the image filenames.
+
 Included experiment: Deep Dreaming Fear & Loathing in Las Vegas: the Great Fan Francisco Acid Wave
 
 The results can be seen on youtube: https://www.youtube.com/watch?v=oyxSerkkP4o
@@ -21,23 +25,27 @@ A good overview (constantly being updated) on which software libraries to instal
 
 Extract 25 frames a second from the source movie
 
-`./1_movie2frames [ffmpeg|avconv] [movie.mp4] [directory]`
+`./1_movie2frames.sh ffmpeg [movie.mp4] [directory]`
 
+or
+
+`./1_movie2frames.sh avconf [movie.mp4] [directory]`
 
 Let a pretrained deep neural network dream on it frames, one by one, taking each new frame and adding 0-50% of the old frame into it for continuity of the hallucinated artifacts, and go drink your caffe
 
-`python 2_dreaming_time.py -i frames -o processed`
+`python 2_dreaming_time.py -i frames -o processed --gpu 0`
 
 different models can be loaded with:
 
-`python 2_dreaming_time.py -i frames -o processed --model_path ../caffe/models/Places205-CNN/ --model_name Places205.caffemodel`
+`python 2_dreaming_time.py -i frames -o processed --model_path ../caffe/models/Places205-CNN/ --model_name Places205.caffemodel --gpu 0`
 
 (again eat your heart out, Not a free lunch, but free models are [here](https://github.com/BVLC/caffe/wiki/Model-Zoo))
 
 and sticking to one specific layer:
 
-`python 2_dreaming_time.py -i frames -o processed -l inception_4c/output`
+`python 2_dreaming_time.py -i frames -o processed -l inception_4c/output --gpu 0`
 
+(don't forget the --gpu flag if you got a gpu to run on, where 0 is the index of the gpu you'd like to use if you have more than 1)
 
 Once enough frames are processed (the script will cut the audio to the needed length automatically) or once all frames are done, put the frames + audio back together:
 

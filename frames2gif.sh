@@ -1,4 +1,4 @@
-!#/bin/bash
+#!/bin/bash
 if [ $# -eq 0 ]; then
     echo "please provide the moviename and directory where to store the frames"
     echo "./frames2gif.sh [directory] [frames_a_second] [filename.gif]"
