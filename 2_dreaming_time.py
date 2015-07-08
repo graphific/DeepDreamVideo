@@ -157,11 +157,15 @@ def main(input, output, disp, gpu, model_path, model_name, preview, octaves, oct
                            channel_swap = (2,1,0)) # the reference model has channels in BGR order instead of RGB
                            
     # should be picked up by caffe by default, but just in case
-    # add by macpod
+    # standard caffe:
     if gpu:
+        caffe.set_mode_gpu()
+        caffe.set_device(int(args.gpu))
+        print("GPU mode [device id: %s]" % args.gpu)
         print("using GPU, but you'd still better make a cup of coffee")
-        caffe.set_mode_gpu();
-        caffe.set_device(0);
+    else:
+        caffe.set_mode_cpu()
+        print("CPU mode")
     
     if disp:
         from IPython.display import clear_output, Image, display
@@ -223,38 +227,80 @@ def main(input, output, disp, gpu, model_path, model_name, preview, octaves, oct
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Dreaming in videos.')
     parser.add_argument(
-        '-i','--input', help='Input directory where extracted frames are stored', required=True)
+        '-i','--input', 
+        help='Input directory where extracted frames are stored', 
+        required=True)
     parser.add_argument(
-        '-o','--output', help='Output directory where processed frames are to be stored', required=True)
+        '-o','--output', 
+        help='Output directory where processed frames are to be stored', 
+        required=True)
     parser.add_argument(
-        '-d', '--display', help='display frames', action='store_true', dest='display')
+        '-d', '--display', 
+        help='display frames', 
+        action='store_true', 
+        dest='display')
     parser.add_argument(
-        '-g', '--gpu', help='Use GPU', action='store_true', dest='gpu')
+        "--gpu",
+        default='0',
+        help="Switch for gpu computation."
+    ) #int can chose index of gpu, if theres multiple gpus to chose from
     parser.add_argument(
-        '-t', '--model_path', help='Model directory to use', dest='model_path', default='../caffe/models/bvlc_googlenet/')
+        '-t', '--model_path', 
+        dest='model_path', 
+        default='../caffe/models/bvlc_googlenet/',
+        help='Model directory to use')
     parser.add_argument(
-        '-m', '--model_name', help='Caffe Model name to use', dest='model_name', default='bvlc_googlenet.caffemodel')
-    
-    #tnx samim:
+        '-m', '--model_name', 
+        dest='model_name', 
+        default='bvlc_googlenet.caffemodel',
+        help='Caffe Model name to use')
     parser.add_argument(
-        '-p','--preview',help='Preview image width. Default: 0', type=int, required=False)
+        '-p','--preview', 
+        type=int, 
+        required=False,
+        help='Preview image width. Default: 0')
     parser.add_argument(
-        '-oct','--octaves',help='Octaves. Default: 4', type=int, required=False)
+        '-oct','--octaves', 
+        type=int, 
+        required=False,
+        help='Octaves. Default: 4')
     parser.add_argument(
-        '-octs','--octavescale',help='Octave Scale. Default: 1.4', type=float, required=False)
+        '-octs','--octavescale', 
+        type=float, 
+        required=False,
+        help='Octave Scale. Default: 1.4',)
     parser.add_argument(
-        '-itr','--iterations',help='Iterations. Default: 10', type=int, required=False)
+        '-itr','--iterations',
+        type=int, 
+        required=False,
+        help='Iterations. Default: 10')
     parser.add_argument(
-        '-j','--jitter',help='Jitter. Default: 32', type=int, required=False)
+        '-j','--jitter', 
+        type=int, 
+        required=False,
+        help='Jitter. Default: 32')
     parser.add_argument(
-        '-z','--zoom',help='Zoom in Amount. Default: 1', type=int, required=False)
+        '-z','--zoom', 
+        type=int,
+        required=False,
+        help='Zoom in Amount. Default: 1')
     parser.add_argument(
-        '-s','--stepsize',help='Step Size. Default: 1.5', type=float, required=False)
+        '-s','--stepsize', 
+        type=float, 
+        required=False,
+        help='Step Size. Default: 1.5')
     parser.add_argument(
-        '-b','--blend',help='Blend Amount. Default: 0.5', type=float, required=False)
+        '-b','--blend', 
+        type=float, 
+        required=False,
+        help='Blend Amount. Default: 0.5')
     parser.add_argument(
-        '-l','--layers',help='Array of Layers to loop through. Default: [customloop] \
-        - or choose ie [inception_4c/output] for that single layer', nargs="+", type=str, required=False)
+        '-l','--layers',
+        nargs="+", 
+        type=str, 
+        required=False
+        help='Array of Layers to loop through. Default: [customloop] \
+        - or choose ie [inception_4c/output] for that single layer')
     
     args = parser.parse_args()
     
