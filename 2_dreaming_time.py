@@ -298,7 +298,7 @@ if __name__ == "__main__":
         '-l','--layers',
         nargs="+", 
         type=str, 
-        required=False
+        required=False,
         help='Array of Layers to loop through. Default: [customloop] \
         - or choose ie [inception_4c/output] for that single layer')
     
