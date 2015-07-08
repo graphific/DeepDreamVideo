@@ -40,8 +40,9 @@ different models can be loaded with:
 
 and sticking to one specific layer:
 
-`python 2_dreaming_time.py -i frames -o processed -l inception_4c/output`
+`python 2_dreaming_time.py -i frames -o processed -l inception_4c/output --gpu 0`
 
+(don't forget the --gpu flag if you got a gpu to run on, where 0 is the index of the gpu you'd like to use if you have more than 1)
 
 Once enough frames are processed (the script will cut the audio to the needed length automatically) or once all frames are done, put the frames + audio back together:
 
