@@ -229,7 +229,7 @@ if __name__ == "__main__":
     parser.add_argument(
         '-d', '--display', help='display frames', action='store_true', dest='display')
     parser.add_argument(
-        '-g', '--gpu', help='Use GPU', action='store_false', dest='gpu')
+        '-g', '--gpu', help='Use GPU', action='store_true', dest='gpu')
     parser.add_argument(
         '-t', '--model_path', help='Model directory to use', dest='model_path', default='../caffe/models/bvlc_googlenet/')
     parser.add_argument(
