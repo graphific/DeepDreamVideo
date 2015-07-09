@@ -9,7 +9,7 @@ Included experiment: Deep Dreaming Fear & Loathing in Las Vegas: the Great Fan F
 
 The results can be seen on youtube: https://www.youtube.com/watch?v=oyxSerkkP4o
 
-Mp4 not yet destroyed by youtube compression also at [mega.nz folder](https://mega.nz/#fm/zpFhCaRD) together with original video file.
+Mp4 not yet destroyed by youtube compression also at [mega.nz](https://mega.nz/#!KldUTKKD!38qj6WtEOE4pno90dAW98gkNK2O3tvz6ZwKTxpHJWFc) together with [original video file](https://mega.nz/#!X9MWWDTQ!lbC7C5B4incMkLGVM00qwI4NP-ifi2KcqsmfsdIm_E0).
 
 All single processed + unprocessed frames are also at [github](https://github.com/graphific/Fear-and-Loathing-experiment)
 
