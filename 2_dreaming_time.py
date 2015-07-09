@@ -158,14 +158,11 @@ def main(input, output, disp, gpu, model_path, model_name, preview, octaves, oct
                            
     # should be picked up by caffe by default, but just in case
     # standard caffe:
-    if gpu:
+    if gpu != '0':
         caffe.set_mode_gpu()
         caffe.set_device(int(args.gpu))
         print("GPU mode [device id: %s]" % args.gpu)
         print("using GPU, but you'd still better make a cup of coffee")
-    else:
-        caffe.set_mode_cpu()
-        print("CPU mode")
     
     if disp:
         from IPython.display import clear_output, Image, display
