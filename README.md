@@ -16,6 +16,8 @@ All single processed + unprocessed frames are also at [github](https://github.co
 ![deepdreamanim1](http://media.giphy.com/media/l41lRx92QqsIXy5MI/giphy.gif "deep dream animation 1")
 ![deepdreamanim2](http://media.giphy.com/media/l41lSzjTsGJcIzpKg/giphy.gif "deep dream animation 2")
 
+Advise also at https://github.com/graphific/DeepDreamVideo/wiki
+
 ##INSTALL Dependencies
 
 A good overview (constantly being updated) on which software libraries to install & list of web resources/howto is at reddit: https://www.reddit.com/r/deepdream/comments/3cawxb/what_are_deepdream_images_how_do_i_make_my_own/
