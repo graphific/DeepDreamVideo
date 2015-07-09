@@ -6,7 +6,7 @@ if [ $# -ne 3 ]; then
 fi
 
 mkdir -p $3
-if [ "avconf" == "$1" ]; then
+if [ "avconv" == "$1" ]; then
     avconv -i $2 -vsync 1 -r 25 -an -y -qscale 0 $3/%04d.jpg
 else
     ffmpeg -i $2 -r 25.0 $3/%4d.jpg
