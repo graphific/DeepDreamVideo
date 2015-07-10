@@ -156,14 +156,13 @@ def main(input, output, disp, gpu, model_path, model_name, preview, octaves, oct
                            mean = np.float32([104.0, 116.0, 122.0]), # ImageNet mean, training set dependent
                            channel_swap = (2,1,0)) # the reference model has channels in BGR order instead of RGB
                            
-    # should be picked up by caffe by default, but just in case
-    # standard caffe:
-    if gpu != '0':
-        caffe.set_mode_gpu()
-        caffe.set_device(int(args.gpu))
-        print("GPU mode [device id: %s]" % args.gpu)
-        print("using GPU, but you'd still better make a cup of coffee")
-    
+    if gpu == '0':
+    	caffe.set_mode_gpu()
+    	caffe.set_device(int(args.gpu))
+    	print("GPU mode [device id: %s]" % args.gpu)
+    	print("using GPU, but you'd still better make a cup of coffee")
+	else: print("SHITTTTTTTTTTTTTT You're running CPU man =D")
+
     if disp:
         from IPython.display import clear_output, Image, display
         print("display turned on")
