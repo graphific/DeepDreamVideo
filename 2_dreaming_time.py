@@ -161,7 +161,8 @@ def main(input, output, disp, gpu, model_path, model_name, preview, octaves, oct
     	caffe.set_device(int(args.gpu))
     	print("GPU mode [device id: %s]" % args.gpu)
     	print("using GPU, but you'd still better make a cup of coffee")
-	else: print("SHITTTTTTTTTTTTTT You're running CPU man =D")
+    else: 
+    	print("SHITTTTTTTTTTTTTT You're running CPU man =D")
 
     if disp:
         from IPython.display import clear_output, Image, display
