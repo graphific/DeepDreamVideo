@@ -35,19 +35,29 @@ or
 
 Let a pretrained deep neural network dream on it frames, one by one, taking each new frame and adding 0-50% of the old frame into it for continuity of the hallucinated artifacts, and go drink your caffe
 
-`python 2_dreaming_time.py -i frames -o processed --gpu`
+gpu:
+
+`python 2_dreaming_time.py -i frames -o processed --gpu 0`
+
+cpu:
+
+`python 2_dreaming_time.py -i frames -o processed`
 
 different models can be loaded with:
 
-`python 2_dreaming_time.py -i frames -o processed --model_path ../caffe/models/Places205-CNN/ --model_name Places205.caffemodel --gpu`
+`python 2_dreaming_time.py -i frames -o processed --model_path ../caffe/models/Places205-CNN/ --model_name Places205.caffemodel --gpu 0`
+
+or
+
+`python 2_dreaming_time.py -i frames -o processed --model_path ../caffe/models/bvlc_googlenet/ --model_name bvlc_googlenet.caffemodel --gpu 0`
 
 (again eat your heart out, Not a free lunch, but free models are [here](https://github.com/BVLC/caffe/wiki/Model-Zoo))
 
 and sticking to one specific layer:
 
-`python 2_dreaming_time.py -i frames -o processed -l inception_4c/output --gpu`
+`python 2_dreaming_time.py -i frames -o processed -l inception_4c/output --gpu 0`
 
-(**don't forget the --gpu flag if you got a gpu to run on**)
+(**don't forget the --gpu 0 flag if you got a gpu to run on**)
 
 Once enough frames are processed (the script will cut the audio to the needed length automatically) or once all frames are done, put the frames + audio back together:
 
