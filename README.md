@@ -35,6 +35,14 @@ or
 
 Let a pretrained deep neural network dream on it frames, one by one, taking each new frame and adding 0-50% of the old frame into it for continuity of the hallucinated artifacts, and go drink your caffe
 
+<pre>python 2_dreaming_time.py [-h] -i INPUT -o OUTPUT [-d] [--gpu GPU]
+                          [-t MODEL_PATH] [-m MODEL_NAME] [-p PREVIEW]
+                          [-oct OCTAVES] [-octs OCTAVESCALE] [-itr ITERATIONS]
+                          [-j JITTER] [-z ZOOM] [-s STEPSIZE] [-b BLEND]
+                          [-l LAYERS [LAYERS ...]] [-gi GUIDE_IMAGE]
+                          [-sf START_FRAME] [-ef END_FRAME]</pre>
+                      
+                          
 gpu:
 
 `python 2_dreaming_time.py -i frames -o processed --gpu 0`
