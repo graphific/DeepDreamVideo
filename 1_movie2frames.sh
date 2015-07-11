@@ -1,7 +1,7 @@
 #!/bin/bash
 if [ $# -ne 3 ]; then
     echo "please provide the moviename and directory where to store the frames"
-    echo "./1_movie2frames [ffmpeg|avconv] [movie.mp4] [directory]"
+    echo "./1_movie2frames [ffmpeg|avconv|mplayer] [movie.mp4] [directory]"
     exit 1
 fi
 
@@ -10,7 +10,7 @@ rm -R "$3/*"
 if [ "avconv" == "$1" ]; then
     AVCONV=$(which avconv)
     FPS=$($AVCONV -i filename 2>&1 | sed -n "s/.*, \(.*\) fp.*/\1/p") # this line is not tested cuz i don't have avconv :(
-    $AVCONV -i "$2" -vsync 1 -an -y -qscale 0 "$3/%08d.jpg"
+    $AVCONV -i "$2" -vsync 1 -r ${FPS} -an -y -qscale 0 "$3/%08d.jpg"
 elif [ "mplayer" == "$1" ]; then
     MPLAYER=$(which mplayer)
     # mplayer automatically converts video to images at one image per frame (so no need for the FPS), so the following line is not necessary - but for the record, this is what you would use:
