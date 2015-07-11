@@ -65,17 +65,7 @@ Once enough frames are processed (the script will cut the audio to the needed le
 
 ##Guided Dreaming
 
-In:
-<img src="https://raw.githubusercontent.com/google/deepdream/master/sky1024px.jpg" alt="Input Image" style="width: 200px;"/>
-
-+
-
-Guide image:
-<img src="https://raw.githubusercontent.com/google/deepdream/master/flowers.jpg" alt="Guide Image" style="width: 200px;"/>
-
-=
-
-<img src="http://i.imgur.com/dw766v9.jpg" alt="Result Image" style="width: 200px;"/>
+<img src="https://pbs.twimg.com/media/CJpPiijUEAQx_F1.png:large" alt="Guided Dreaming" style="width: 200px;"/>
 
 command:
 
