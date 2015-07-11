@@ -73,7 +73,7 @@ Once enough frames are processed (the script will cut the audio to the needed le
 
 ##Guided Dreaming
 
-<img src="https://pbs.twimg.com/media/CJpPiijUEAQx_F1.png:large" alt="Guided Dreaming" style="width: 200px;"/>
+<img src="http://i.imgur.com/hQ0fzM1.jpg" alt="Guided Dreaming" style="width: 200px;" alt="Guided Dreaming"/>
 
 command:
 
