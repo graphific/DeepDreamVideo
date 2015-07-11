@@ -26,14 +26,3 @@ rm /tmp/musicshort.aac
 echo "musicshort.wav removed"
 #rm /tmp/tmp.mp4
 echo "tmp.mp4 removed"
-
-echo 'Removing temp files'
-rm /tmp/original.mp3
-echo "original.mp3 removed"
-rm /tmp/music.aac
-echo "music.wav removed"
-rm /tmp/musicshort.aac
-echo "musicshort.wav removed"
-#rm /tmp/tmp.mp4
-echo "tmp.mp4 removed"
-
