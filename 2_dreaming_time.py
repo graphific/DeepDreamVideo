@@ -181,7 +181,7 @@ def main(input, output, disp, gpu, model_path, model_name, preview, octaves, oct
     #if guide-image is None: guide-image = "none"
     if start-frame is None:
     	frame_i = 1
-    if end-frame not is None:
+    if not end-frame is None:
     	nrframes = end-frame
     
     #Load DNN
@@ -221,7 +221,7 @@ def main(input, output, disp, gpu, model_path, model_name, preview, octaves, oct
     for i in xrange(frame_i,nrframes):
         print('Processing frame #{}').format(frame_i)
         
-        if guide-image not is None:
+        if not guide-image is None:
         	guide = np.float32(PIL.Image.open(guide-image))
         	print('Setting up Guide with selected image')
 		h, w = guide.shape[:2]
@@ -395,6 +395,6 @@ if __name__ == "__main__":
 
     main(
         args.input, args.output, args.display, args.gpu, args.model_path, args.model_name, 
-        args.preview, args.octaves, args.octavescale, args.iterations, args.jitter, args.zoom, args.stepsize, 
-        args.blend, args.layers, args.guide-image)
+        args.preview, args.octaves, args.octavescale, args.iterations, args.jitter, args.zoom, args.stepsize, args.blend, args.layers, args.guide-image)
+
 
