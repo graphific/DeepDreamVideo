@@ -15,7 +15,7 @@ ${FFMPEG} -i "$2" /tmp/original.aac -y
 
 #secs=$(${FFPROBE} -i /tmp/tmp.mp4 -show_entries format=duration -v quiet -of csv="p=0")
 #${FFMPEG} -i /tmp/music.wav -ss 0 -t ${secs} /tmp/musicshort.aac
-${FFMPEG} -i /tmp/original.aac -i /tmp/tmp.mp4 -c:v copy -movflags faststart -shortest "${1}TEST.mp4" -y
+${FFMPEG} -i /tmp/original.aac -i /tmp/tmp.mp4 -c:v copy -movflags faststart -shortest "${1}_done.mp4" -y
 
 echo 'Removing temp files'
 rm /tmp/original.mp3
