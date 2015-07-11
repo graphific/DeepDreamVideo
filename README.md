@@ -9,12 +9,14 @@ Included experiment: Deep Dreaming Fear & Loathing in Las Vegas: the Great Fan F
 
 The results can be seen on youtube: https://www.youtube.com/watch?v=oyxSerkkP4o
 
-Mp4 not yet destroyed by youtube compression also at [mega.nz folder](https://mega.nz/#fm/zpFhCaRD) together with original video file.
+Mp4 not yet destroyed by youtube compression also at [mega.nz](https://mega.nz/#!KldUTKKD!38qj6WtEOE4pno90dAW98gkNK2O3tvz6ZwKTxpHJWFc) together with [original video file](https://mega.nz/#!X9MWWDTQ!lbC7C5B4incMkLGVM00qwI4NP-ifi2KcqsmfsdIm_E0).
 
 All single processed + unprocessed frames are also at [github](https://github.com/graphific/Fear-and-Loathing-experiment)
 
 ![deepdreamanim1](http://media.giphy.com/media/l41lRx92QqsIXy5MI/giphy.gif "deep dream animation 1")
 ![deepdreamanim2](http://media.giphy.com/media/l41lSzjTsGJcIzpKg/giphy.gif "deep dream animation 2")
+
+Advise also at https://github.com/graphific/DeepDreamVideo/wiki
 
 ##INSTALL Dependencies
 
@@ -33,11 +35,29 @@ or
 
 Let a pretrained deep neural network dream on it frames, one by one, taking each new frame and adding 0-50% of the old frame into it for continuity of the hallucinated artifacts, and go drink your caffe
 
+<pre>python 2_dreaming_time.py [-h] -i INPUT -o OUTPUT [-d] [--gpu GPU]
+                          [-t MODEL_PATH] [-m MODEL_NAME] [-p PREVIEW]
+                          [-oct OCTAVES] [-octs OCTAVESCALE] [-itr ITERATIONS]
+                          [-j JITTER] [-z ZOOM] [-s STEPSIZE] [-b BLEND]
+                          [-l LAYERS [LAYERS ...]] [-gi GUIDE_IMAGE]
+                          [-sf START_FRAME] [-ef END_FRAME]</pre>
+                      
+                          
+gpu:
+
 `python 2_dreaming_time.py -i frames -o processed --gpu 0`
+
+cpu:
+
+`python 2_dreaming_time.py -i frames -o processed`
 
 different models can be loaded with:
 
 `python 2_dreaming_time.py -i frames -o processed --model_path ../caffe/models/Places205-CNN/ --model_name Places205.caffemodel --gpu 0`
+
+or
+
+`python 2_dreaming_time.py -i frames -o processed --model_path ../caffe/models/bvlc_googlenet/ --model_name bvlc_googlenet.caffemodel --gpu 0`
 
 (again eat your heart out, Not a free lunch, but free models are [here](https://github.com/BVLC/caffe/wiki/Model-Zoo))
 
@@ -45,11 +65,24 @@ and sticking to one specific layer:
 
 `python 2_dreaming_time.py -i frames -o processed -l inception_4c/output --gpu 0`
 
-(don't forget the --gpu flag if you got a gpu to run on, where 0 is the index of the gpu you'd like to use if you have more than 1)
+(**don't forget the --gpu 0 flag if you got a gpu to run on**)
 
 Once enough frames are processed (the script will cut the audio to the needed length automatically) or once all frames are done, put the frames + audio back together:
 
 `./3_frames2movie.sh [frames_directory] [original_video_with_sound]`
+
+##Guided Dreaming
+
+<img src="http://i.imgur.com/hQ0fzM1.jpg" alt="Guided Dreaming" style="width: 200px;" alt="Guided Dreaming"/>
+
+command:
+
+`python 2_dreaming_time.py -i frames -o processed -l inception_4c/output --guide-image flower.jpg --gpu 0`
+
+
+##Batch Processing with different parameters
+
+`python 2_dreaming_time.py -i frames -o processed -l inception_4c/output --guide-image flower.jpg --gpu 0 --start-frame 1 --end-frame 100; python 2_dreaming_time.py -i frames -o processed -l inception_4b/output --guide-image disco.jpg --gpu 0 --start-frame 101 --end-frame 200`
 
 
 ##More information:
@@ -102,4 +135,4 @@ https://www.youtube.com/watch?v=6IgbMiEaFRY
 
 ## Credits
 
-Roelof | [KTH](www.csc.kth.se/~roelof/) & [Graph Technologies](http://www.graph-technologies.com/) | [@graphific](https://twitter.com/graphific)
+Roelof | [KTH](http://www.csc.kth.se/~roelof/) & [Graph Technologies](http://www.graph-technologies.com/) | [@graphific](https://twitter.com/graphific)
