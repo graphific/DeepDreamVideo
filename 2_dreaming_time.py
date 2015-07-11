@@ -32,7 +32,44 @@ def preprocess(net, img):
 def deprocess(net, img):
     return np.dstack((img + net.transformer.mean['data'])[::-1])
 
+def objective_L2(dst):
+    dst.diff[:] = dst.data 
 
+#objective for guided dreaming
+def objective_guide(dst):
+    x = dst.data[0].copy()
+    y = guide_features
+    ch = x.shape[0]
+    x = x.reshape(ch,-1)
+    y = y.reshape(ch,-1)
+    A = x.T.dot(y) # compute the matrix of dot-products with guide features
+    dst.diff[0].reshape(ch,-1)[:] = y[:,A.argmax(1)] # select ones that match best
+
+
+#guided dreaming
+def make_step_guided(net, step_size=1.5, end='inception_4c/output', 
+              jitter=32, clip=True, objective=objective_L2):
+    '''Basic gradient ascent step.'''
+
+    src = net.blobs['data'] # input image is stored in Net's 'data' blob
+    dst = net.blobs[end]
+
+    ox, oy = np.random.randint(-jitter, jitter+1, 2)
+    src.data[0] = np.roll(np.roll(src.data[0], ox, -1), oy, -2) # apply jitter shift
+            
+    net.forward(end=end)
+    objective(dst)  # specify the optimization objective
+    net.backward(start=end)
+    g = src.diff[0]
+    # apply normalized ascent step to the input image
+    src.data[:] += step_size/np.abs(g).mean() * g
+
+    src.data[0] = np.roll(np.roll(src.data[0], -ox, -1), -oy, -2) # unshift image
+            
+    if clip:
+        bias = net.transformer.mean['data']
+        src.data[:] = np.clip(src.data, -bias, 255-bias)  
+        
 #Make dreams
 def make_step(net, step_size=1.5, end='inception_4c/output', jitter=32, clip=True):
     '''Basic gradient ascent step.'''
@@ -56,7 +93,8 @@ def make_step(net, step_size=1.5, end='inception_4c/output', jitter=32, clip=Tru
         bias = net.transformer.mean['data']
         src.data[:] = np.clip(src.data, -bias, 255-bias)
 
-def deepdream(net, base_img, iter_n=10, octave_n=4, octave_scale=1.4, end='inception_4c/output', disp=False, clip=True, **step_params):
+def deepdream(net, base_img, iter_n=10, octave_n=4, octave_scale=1.4, 
+	      end='inception_4c/output', disp=False, clip=True, **step_params):
     # prepare base images for all octaves
     octaves = [preprocess(net, base_img)]
     for i in xrange(octave_n - 1):
@@ -121,7 +159,7 @@ layersloop = ['inception_4c/output', 'inception_4d/output',
               'inception_5b/output', 'inception_5a/output',
               'inception_4e/output', 'inception_4d/output',
               'inception_4c/output']
-def main(input, output, disp, gpu, model_path, model_name, preview, octaves, octave_scale, iterations, jitter, zoom, stepsize, blend, layers):
+def main(input, output, disp, gpu, model_path, model_name, preview, octaves, octave_scale, iterations, jitter, zoom, stepsize, blend, layers, guide-image):
     make_sure_path_exists(input)
     make_sure_path_exists(output)
     
@@ -140,6 +178,11 @@ def main(input, output, disp, gpu, model_path, model_name, preview, octaves, oct
     if stepsize is None: stepsize = 1.5
     if blend is None: blend = 0.5
     if layers is None: layers = 'customloop' #['inception_4c/output']
+    #if guide-image is None: guide-image = "none"
+    if start-frame is None:
+    	frame_i = 1
+    if end-frame not is None:
+    	nrframes = end-frame
     
     #Load DNN
     net_fn   = model_path + 'deploy.prototxt'
@@ -171,23 +214,43 @@ def main(input, output, disp, gpu, model_path, model_name, preview, octaves, oct
     frame = np.float32(PIL.Image.open(input+'/0001.jpg'))
     if preview is not 0:
         frame = resizePicture(input+'/0001.jpg',preview)
-    frame_i = 1
+    #frame_i = 1
     
     now = time.time()
     
     for i in xrange(frame_i,nrframes):
         print('Processing frame #{}').format(frame_i)
         
+        if guide-image not is None:
+        	guide = np.float32(PIL.Image.open(guide-image))
+        	print('Setting up Guide with selected image')
+		h, w = guide.shape[:2]
+		src, dst = net.blobs['data'], net.blobs[endparam]
+		src.reshape(1,3,h,w)
+		src.data[0] = preprocess(net, guide)
+		net.forward(end=endparam)
+		guide_features = dst.data[0].copy()
+
         if layers == 'customloop': #loop over layers as set in layersloop array
             endparam = layersloop[frame_i % len(layersloop)]
-            frame = deepdream(
-                net, frame, iter_n = iterations, step_size = stepsize, octave_n = octaves, octave_scale = octave_scale, 
-                jitter=jitter, end = endparam)
+            if guide-image is None:
+	            frame = deepdream(
+	                net, frame, iter_n = iterations, step_size = stepsize, octave_n = octaves, octave_scale = octave_scale, 
+	                jitter=jitter, end = endparam)
+	    else:
+	    	 frame = deepdream(
+	                net, frame, iter_n = iterations, step_size = stepsize, octave_n = octaves, octave_scale = octave_scale, 
+	                jitter=jitter, end = endparam, objective=objective_guide)
         else: #loop through layers one at a time until this specific layer
             endparam = layers[frame_i % len(layers)]
-            frame = deepdream(
-                net, frame, iter_n = iterations, step_size = stepsize, octave_n = octaves, octave_scale = octave_scale, 
-                jitter=jitter, end = endparam)
+            if guide-image is None:
+	            frame = deepdream(
+	                net, frame, iter_n = iterations, step_size = stepsize, octave_n = octaves, octave_scale = octave_scale, 
+	                jitter=jitter, end = endparam)
+	    else:
+	    	frame = deepdream(
+	                net, frame, iter_n = iterations, step_size = stepsize, octave_n = octaves, octave_scale = octave_scale, 
+	                jitter=jitter, end = endparam, objective=objective_guide)
 
         saveframe = output + "/%08d.jpg" % frame_i
         
@@ -298,6 +361,19 @@ if __name__ == "__main__":
         required=False,
         help='Array of Layers to loop through. Default: [customloop] \
         - or choose ie [inception_4c/output] for that single layer')
+        
+    parser.add_argument(
+    	'-gi', '--guide-image', 
+    	required=False, 
+    	help="path to guide image")
+    parser.add_argument(
+    	'-sf', '--start-frame', 
+    	required=False, 
+    	help="starting frame nr")
+    parser.add_argument(
+    	'-ef', '--end-frame', 
+    	required=False, 
+    	help="end frame nr")
     
     args = parser.parse_args()
     
@@ -319,5 +395,6 @@ if __name__ == "__main__":
 
     main(
         args.input, args.output, args.display, args.gpu, args.model_path, args.model_name, 
-        args.preview, args.octaves, args.octavescale, args.iterations, args.jitter, args.zoom, args.stepsize, args.blend, args.layers)
+        args.preview, args.octaves, args.octavescale, args.iterations, args.jitter, args.zoom, args.stepsize, 
+        args.blend, args.layers, args.guide-image)
 
