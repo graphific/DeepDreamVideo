@@ -189,7 +189,7 @@ def main(input, output, disp, gpu, model_path, model_name, preview, octaves, oct
                 net, frame, iter_n = iterations, step_size = stepsize, octave_n = octaves, octave_scale = octave_scale, 
                 jitter=jitter, end = endparam)
 
-        saveframe = output + "/%04d.jpg" % frame_i
+        saveframe = output + "/%08d.jpg" % frame_i
         
         later = time.time()
         difference = int(later - now)
@@ -205,7 +205,7 @@ def main(input, output, disp, gpu, model_path, model_name, preview, octaves, oct
         print '***************************************'
         
         PIL.Image.fromarray(np.uint8(frame)).save(saveframe)
-        newframe = input + "/%04d.jpg" % frame_i
+        newframe = input + "/%08d.jpg" % frame_i
         
         if blend == 0:
             newimg = PIL.Image.open(newframe)

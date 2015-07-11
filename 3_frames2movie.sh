@@ -5,21 +5,24 @@ if [ $# -ne 2 ]; then
     exit 1
 fi
 
-ffmpeg -framerate 25 -i $1/%4d.jpg -c:v libx264 -r 30 -pix_fmt yuv420p tmp.mp4
+FFMPEG=$(which ffmpeg)
+FFPROBE=$(which ffprobe)
 
-ffmpeg -i $2 original.mp3
-ffmpeg -i original.mp3 music.wav
+${FFMPEG} -framerate 25 -i "$1/%08d.jpg" -c:v libx264 -vf "fps=25,format=yuv420p" -tune fastdecode -tune zerolatency -profile:v baseline /tmp/tmp.mp4 -y
 
-secs=$(ffprobe -i tmp.mp4 -show_entries format=duration -v quiet -of csv="p=0")
-ffmpeg -i music.wav -ss 0 -t $secs musicshort.wav
-ffmpeg -i musicshort.wav -i tmp.mp4 -strict -2 $1.mp4
+${FFMPEG} -i "$2" /tmp/original.aac -y
+#${FFMPEG} -i /tmp/original.mp3 /tmp/music.wav
+
+#secs=$(${FFPROBE} -i /tmp/tmp.mp4 -show_entries format=duration -v quiet -of csv="p=0")
+#${FFMPEG} -i /tmp/music.wav -ss 0 -t ${secs} /tmp/musicshort.aac
+${FFMPEG} -i /tmp/original.aac -i /tmp/tmp.mp4 -c:v copy -movflags faststart -shortest "${1}TEST.mp4" -y
 
 echo 'Removing temp files'
-rm original.mp3
+rm /tmp/original.mp3
 echo "original.mp3 removed"
-rm music.wav
+rm /tmp/music.aac
 echo "music.wav removed"
-rm musicshort.wav
+rm /tmp/musicshort.aac
 echo "musicshort.wav removed"
-rm tmp.mp4
+#rm /tmp/tmp.mp4
 echo "tmp.mp4 removed"
