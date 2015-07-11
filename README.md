@@ -63,6 +63,29 @@ Once enough frames are processed (the script will cut the audio to the needed le
 
 `./3_frames2movie.sh [frames_directory] [original_video_with_sound]`
 
+##Guided Dreaming
+
+In:
+<img src="https://raw.githubusercontent.com/google/deepdream/master/sky1024px.jpg" alt="Input Image" style="width: 200px;"/>
+
++
+
+Guide image:
+<img src="https://raw.githubusercontent.com/google/deepdream/master/flowers.jpg" alt="Guide Image" style="width: 200px;"/>
+
+=
+
+<img src="http://i.imgur.com/dw766v9.jpg" alt="Result Image" style="width: 200px;"/>
+
+command:
+
+`python 2_dreaming_time.py -i frames -o processed -l inception_4c/output --guide-image flower.jpg --gpu 0`
+
+
+##Batch Processing with different parameters
+
+`python 2_dreaming_time.py -i frames -o processed -l inception_4c/output --guide-image flower.jpg --gpu 0 --start-frame 1 --end-frame 100; python 2_dreaming_time.py -i frames -o processed -l inception_4b/output --guide-image disco.jpg --gpu 0 --start-frame 101 --end-frame 200`
+
 
 ##More information:
 
