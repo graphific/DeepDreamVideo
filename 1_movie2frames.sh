@@ -2,17 +2,22 @@
 if [ $# -ne 3 ]; then
     echo "please provide the moviename and directory where to store the frames"
 <<<<<<< HEAD
+<<<<<<< HEAD
     echo "usage:"
     echo "./1_movie2frames [ffmpeg|avconv] [movie.ext] [directory]"
     echo "\n example:
     echo "      ./1_movie2frames ffmpeg /home/user/fearloath.mp4 /home/user/framesloath/"
+=======
+    echo "./1_movie2frames [ffmpeg|avconv] [movie.mp4] [directory]"
+>>>>>>> parent of 303a3a3... Removed framerate to use original from video.
     exit 1
 fi
 
 mkdir -p $3
 if [ "avconf" == "$1" ]; then
-    avconv -i $2 -vsync 1 -an -y -qscale 0 $3/%04d.jpg
+    avconv -i $2 -vsync 1 -r 25 -an -y -qscale 0 $3/%04d.jpg
 else
+<<<<<<< HEAD
     ffmpeg -i $2 $3/%4d.jpg
 =======
     echo "./1_movie2frames [ffmpeg|avconv|mplayer] [movie.mp4] [directory]"
@@ -36,4 +41,7 @@ else
     FPS=$($FFPROBE -show_streams -select_streams v -i "$2"  2>/dev/null | grep "r_frame_rate" | cut -d'=' -f2)
     $FFMPEG -i "$2" -r ${FPS} -f image2 "$3/%08d.jpg"
 >>>>>>> 426b081b064d3748dae053f0efd1892fa7b7100c
+=======
+    ffmpeg -i $2 -r 25.0 $3/%4d.jpg
+>>>>>>> parent of 303a3a3... Removed framerate to use original from video.
 fi
