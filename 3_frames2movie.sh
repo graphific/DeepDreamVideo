@@ -10,19 +10,21 @@ FFPROBE=$(which ffprobe)
 
 ${FFMPEG} -framerate 25 -i "$1/%08d.jpg" -c:v libx264 -vf "fps=25,format=yuv420p" -tune fastdecode -tune zerolatency -profile:v baseline /tmp/tmp.mp4 -y
 
-${FFMPEG} -i "$2" /tmp/original.aac -y
-#${FFMPEG} -i /tmp/original.mp3 /tmp/music.wav
+${FFMPEG} -i "$2" -strict -2 /tmp/original.aac -y
+#${FFMPEG} -i /tmp/original.aac /tmp/music.wav
 
 #secs=$(${FFPROBE} -i /tmp/tmp.mp4 -show_entries format=duration -v quiet -of csv="p=0")
 #${FFMPEG} -i /tmp/music.wav -ss 0 -t ${secs} /tmp/musicshort.aac
-${FFMPEG} -i /tmp/original.aac -i /tmp/tmp.mp4 -c:v copy -movflags faststart -shortest "${1}_done.mp4" -y
+${FFMPEG} -i /tmp/original.aac -i /tmp/tmp.mp4 -strict -2 -c:v copy -movflags faststart -shortest "${1}_done.mp4" -y
 
 echo 'Removing temp files'
-rm /tmp/original.mp3
-echo "original.mp3 removed"
-rm /tmp/music.aac
-echo "music.wav removed"
-rm /tmp/musicshort.aac
-echo "musicshort.wav removed"
-#rm /tmp/tmp.mp4
-echo "tmp.mp4 removed"
+rm /tmp/original.aac
+#echo "original.aac removed"
+#rm /tmp/music.aac
+#echo "music.wav removed"
+#rm /tmp/musicshort.aac
+#echo "musicshort.wav removed"
+rm /tmp/tmp.mp4
+#echo "tmp.mp4 removed"
+
+echo "saved movie as: ${1}_done.mp4"

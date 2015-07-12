@@ -6,8 +6,8 @@ import os, os.path
 import errno
 import sys
 import time
+from random import randint
 
-# imports and basic notebook setup
 from cStringIO import StringIO
 import numpy as np
 import scipy.ndimage as nd
@@ -96,7 +96,7 @@ def make_step(net, step_size=1.5, end='inception_4c/output', jitter=32, clip=Tru
         bias = net.transformer.mean['data']
         src.data[:] = np.clip(src.data, -bias, 255-bias)
 
-def deepdream(net, base_img, iter_n=10, octave_n=4, octave_scale=1.4, end='inception_4c/output', disp=False, clip=True, **step_params):
+def deepdream(net, base_img, iter_n=10, octave_n=4, octave_scale=1.4, end='inception_4c/output', verbose = 1, clip=True, **step_params):
 
     # prepare base images for all octaves
     octaves = [preprocess(net, base_img)]
@@ -121,11 +121,12 @@ def deepdream(net, base_img, iter_n=10, octave_n=4, octave_scale=1.4, end='incep
             vis = deprocess(net, src.data[0])
             if not clip: # adjust image contrast if clipping is disabled
                 vis = vis * (255.0 / np.percentile(vis, 99.98))
-            if disp:
+            if verbose == 3:
                 showarray(vis)
-            print(octave, i, end, vis.shape)
-            if disp:
+            	print(octave, i, end, vis.shape)
                 clear_output(wait=True)
+            elif verbose == 2:
+                print(octave, i, end, vis.shape)
 
         # extract details produced on the current octave
         detail = src.data[0]-octave_base
@@ -161,7 +162,7 @@ def make_step_guided(net, step_size=1.5, end='inception_4c/output',
         bias = net.transformer.mean['data']
         src.data[:] = np.clip(src.data, -bias, 255-bias)
 
-def deepdream_guided(net, base_img, iter_n=10, octave_n=4, octave_scale=1.4, end='inception_4c/output', clip=True, disp=False, objective_fn=objective_guide, **step_params):
+def deepdream_guided(net, base_img, iter_n=10, octave_n=4, octave_scale=1.4, end='inception_4c/output', clip=True, verbose=1, objective_fn=objective_guide, **step_params):
 
     #if objective_fn is None:
     #    objective_fn = objective_L2
@@ -189,11 +190,12 @@ def deepdream_guided(net, base_img, iter_n=10, octave_n=4, octave_scale=1.4, end
             vis = deprocess(net, src.data[0])
             if not clip: # adjust image contrast if clipping is disabled
                 vis = vis*(255.0/np.percentile(vis, 99.98))
-            if disp:
+            if verbose == 3:
                 showarray(vis)
-            print octave, i, end, vis.shape
-            if disp:
+            	print octave, i, end, vis.shape
                 clear_output(wait=True)
+            elif verbose == 2:
+                print octave, i, end, vis.shape
 
         # extract details produced on the current octave
         detail = src.data[0]-octave_base
@@ -211,7 +213,7 @@ def morphPicture(filename1,filename2,blend,width):
 	img1 = PIL.Image.open(filename1)
 	img2 = PIL.Image.open(filename2)
 	if width is not 0:
-		img2 = resizePicture(filename2,width)
+	    img2 = resizePicture(filename2,width)
 	return PIL.Image.blend(img1, img2, blend)
 
 def make_sure_path_exists(path):
@@ -231,7 +233,7 @@ layersloop = ['inception_4c/output', 'inception_4d/output',
               'inception_4e/output', 'inception_4d/output',
               'inception_4c/output']
 
-def main(input, output, disp, gpu, model_path, model_name, preview, octaves, octave_scale, iterations, jitter, zoom, stepsize, blend, layers, guide_image, start_frame, end_frame):
+def main(input, output, gpu, model_path, model_name, preview, octaves, octave_scale, iterations, jitter, zoom, stepsize, blend, layers, guide_image, start_frame, end_frame, verbose):
     make_sure_path_exists(input)
     make_sure_path_exists(output)
 
@@ -248,14 +250,15 @@ def main(input, output, disp, gpu, model_path, model_name, preview, octaves, oct
     if jitter is None: jitter = 32
     if zoom is None: zoom = 1
     if stepsize is None: stepsize = 1.5
-    if blend is None: blend = 0.5
+    if blend is None: blend = 0.5 #can be nr (constant), random, or loop
+    if verbose is None: verbose = 1
     if layers is None: layers = 'customloop' #['inception_4c/output']
     if start_frame is None:
     	frame_i = 1
     else:
-        frame_i = start_frame
+        frame_i = int(start_frame)
     if not end_frame is None:
-    	nrframes = end_frame
+    	nrframes = int(end_frame)+1
 
     #Load DNN
     net_fn   = model_path + 'deploy.prototxt'
@@ -280,7 +283,7 @@ def main(input, output, disp, gpu, model_path, model_name, preview, octaves, oct
         print("GPU mode [device id: %s]" % args.gpu)
         print("using GPU, but you'd still better make a cup of coffee")
 
-    if disp:
+    if verbose == 3:
         from IPython.display import clear_output, Image, display
         print("display turned on")
 
@@ -289,6 +292,11 @@ def main(input, output, disp, gpu, model_path, model_name, preview, octaves, oct
         frame = resizePicture(input + '/%08d.jpg' % frame_i, preview)
 
     now = time.time()
+    
+    if blend == 'loop':
+        blend_forward = True
+        blend_at = 0.4
+        blend_step = 0.1
 
     for i in xrange(frame_i, nrframes):
         print('Processing frame #{}').format(frame_i)
@@ -301,13 +309,13 @@ def main(input, output, disp, gpu, model_path, model_name, preview, octaves, oct
 
         #Choosing between normal dreaming, and guided dreaming
         if guide_image is None:
-            frame = deepdream(net, frame, disp=disp, iter_n = iterations, step_size = stepsize, octave_n = octaves, octave_scale = octave_scale, jitter=jitter, end = endparam)
+            frame = deepdream(net, frame, verbose=verbose, iter_n = iterations, step_size = stepsize, octave_n = octaves, octave_scale = octave_scale, jitter=jitter, end = endparam)
         else:
             guide = np.float32(PIL.Image.open(guide_image))
             print('Setting up Guide with selected image')
             guide_features = prepare_guide(net,PIL.Image.open(guide_image), end=endparam)
 
-            frame = deepdream_guided(net, frame, disp=disp, iter_n = iterations, step_size = stepsize, octave_n = octaves, octave_scale = octave_scale, jitter=jitter, end = endparam, objective_fn=objective_guide, guide_features=guide_features,)
+            frame = deepdream_guided(net, frame, verbose=verbose, iter_n = iterations, step_size = stepsize, octave_n = octaves, octave_scale = octave_scale, jitter=jitter, end = endparam, objective_fn=objective_guide, guide_features=guide_features,)
 
         saveframe = output + "/%08d.jpg" % frame_i
 
@@ -333,7 +341,17 @@ def main(input, output, disp, gpu, model_path, model_name, preview, octaves, oct
                 newimg = resizePicture(newframe,preview)
             frame = newimg
         else:
-            frame = morphPicture(saveframe,newframe,blend,preview)
+       
+            if blend == 'random':
+            	blendval=randint(5,10)/10.
+            elif blend == 'loop':
+                if blend_at > 1 - blend_step: blend_forward = False
+                elif blend_at <= 0.5: blend_forward = True
+                if blend_forward: blend_at += blend_step
+                else: blend_at -= blend_step
+                blendval = blend_at
+            else: blendval = blend
+            frame = morphPicture(saveframe,newframe,blendval,preview)
 
         frame = np.float32(frame)
 
@@ -351,11 +369,6 @@ if __name__ == "__main__":
         '-o','--output',
         help='Output directory where processed frames are to be stored',
         required=True)
-    parser.add_argument(
-        '-d', '--display',
-        help='display frames',
-        action='store_true',
-        dest='display')
     parser.add_argument(
         "--gpu",
         default='0',
@@ -408,9 +421,9 @@ if __name__ == "__main__":
         help='Step Size. Default: 1.5')
     parser.add_argument(
         '-b','--blend',
-        type=float,
+        type=str,
         required=False,
-        help='Blend Amount. Default: 0.5')
+        help='Blend Amount. Default: "0.5" (constant), or "loop" (0.5-1.0), or "random"')
     parser.add_argument(
         '-l','--layers',
         nargs="+",
@@ -418,17 +431,23 @@ if __name__ == "__main__":
         required=False,
         help='Array of Layers to loop through. Default: [customloop] \
         - or choose ie [inception_4c/output] for that single layer')
-
+    parser.add_argument(
+        '-v', '--verbose',
+        type=int,
+        required=False,
+        help="verbosity [0-3]")
     parser.add_argument(
     	'-gi', '--guide_image',
     	required=False,
     	help="path to guide image")
     parser.add_argument(
     	'-sf', '--start_frame',
+        type=int,
     	required=False,
     	help="starting frame nr")
     parser.add_argument(
     	'-ef', '--end_frame',
+        type=int,
     	required=False,
     	help="end frame nr")
 
@@ -450,7 +469,7 @@ if __name__ == "__main__":
         print("or download one with ./caffe_dir/scripts/download_model_binary.py caffe_dir/models/bvlc_googlenet")
         sys.exit(0)
 
-    main(args.input, args.output, args.display, args.gpu, args.model_path, args.model_name, args.preview, args.octaves, args.octavescale, args.iterations, args.jitter, args.zoom, args.stepsize, args.blend, args.layers, args.guide_image, args.start_frame, args.end_frame)
+    main(args.input, args.output, args.gpu, args.model_path, args.model_name, args.preview, args.octaves, args.octavescale, args.iterations, args.jitter, args.zoom, args.stepsize, args.blend, args.layers, args.guide_image, args.start_frame, args.end_frame, args.verbose)
 
 
 
