@@ -18,7 +18,8 @@ elif [ "mplayer" == "$1" ]; then
     $MPLAYER -vo "jpeg:outdir=$3" -ao null "$2"
 else
     FFMPEG=$(which ffmpeg)
-    FFPROBE=$(which ffprobe)
-    FPS=$($FFPROBE -show_streams -select_streams v -i "$2"  2>/dev/null | grep "r_frame_rate" | cut -d'=' -f2)
-    $FFMPEG -i "$2" -r ${FPS} -f image2 "$3/%08d.jpg"
+    #Same happens with FFMPEG as MPLAYER, fps is not needed for video to frame convertion.
+    #FFPROBE=$(which ffprobe)
+    #FPS=$($FFPROBE -show_streams -select_streams v -i "$2"  2>/dev/null | grep "r_frame_rate" | cut -d'=' -f2)
+    $FFMPEG -i "$2" -f image2 "$3/%08d.jpg"
 fi
