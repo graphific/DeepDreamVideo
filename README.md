@@ -35,10 +35,10 @@ or
 
 Let a pretrained deep neural network dream on it frames, one by one, taking each new frame and adding 0-50% of the old frame into it for continuity of the hallucinated artifacts, and go drink your caffe
 
-<pre>usage: 2_dreaming_time.py [-h] -i INPUT -o OUTPUT [--gpu GPU] [-t MODEL_PATH]
-                          [-m MODEL_NAME] [-p PREVIEW] [-oct OCTAVES]
-                          [-octs OCTAVESCALE] [-itr ITERATIONS] [-j JITTER]
-                          [-z ZOOM] [-s STEPSIZE] [-b BLEND]
+<pre>usage: 2_dreaming_time.py [-h] -i INPUT -o OUTPUT -it IMAGE_TYPE [--gpu GPU]
+                          [-t MODEL_PATH] [-m MODEL_NAME] [-p PREVIEW]
+                          [-oct OCTAVES] [-octs OCTAVESCALE] [-itr ITERATIONS]
+                          [-j JITTER] [-z ZOOM] [-s STEPSIZE] [-b BLEND]
                           [-l LAYERS [LAYERS ...]] [-v VERBOSE]
                           [-gi GUIDE_IMAGE] [-sf START_FRAME] [-ef END_FRAME]
 
@@ -51,6 +51,8 @@ optional arguments:
   -o OUTPUT, --output OUTPUT
                         Output directory where processed frames are to be
                         stored
+  -it IMAGE_TYPE, --image_type IMAGE_TYPE
+                        Specify whether jpg or png
   --gpu GPU             Switch for gpu computation.
   -t MODEL_PATH, --model_path MODEL_PATH
                         Model directory to use
