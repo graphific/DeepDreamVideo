@@ -25,17 +25,17 @@ A good overview (constantly being updated) on which software libraries to instal
 
 ##Usage:
 
-Extract frames from the source movie
+Extract frames from the source movie in the selected format (png or jpg).
 
-`./1_movie2frames.sh ffmpeg [original_video] [frames_directory]`
+`./1_movie2frames.sh ffmpeg [original_video] [frames_directory] [png / jpg]`
 
 or
 
-`./1_movie2frames.sh avconv [original_video] [frames_directory]`
+`./1_movie2frames.sh avconv [original_video] [frames_directory] [png / jpg]`
 
 or 
 
-`./1_movie2frames.sh mplayer [original_video] [frames_directory]`
+`./1_movie2frames.sh mplayer [original_video] [frames_directory] [png / jpg]`
 
 Let a pretrained deep neural network dream on it frames, one by one, taking each new frame and adding 0-50% of the old frame into it for continuity of the hallucinated artifacts, and go drink your caffe
 
@@ -119,7 +119,7 @@ and sticking to one specific layer:
 
 Once enough frames are processed (the script will cut the audio to the needed length automatically) or once all frames are done, put the frames + audio back together:
 
-`./3_frames2movie.sh [processed_frames_dir] [original_video]`
+`./3_frames2movie.sh [processed_frames_dir] [original_video] [png / jpg]`
 
 ##Guided Dreaming
 
