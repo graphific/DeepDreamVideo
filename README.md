@@ -117,7 +117,7 @@ Once enough frames are processed (the script will cut the audio to the needed le
 
 ##Guided Dreaming
 
-<img src="images/guided_dreaming.jpg.jpg?raw=true" style="max-width: 300px;"/><br/>
+<img src="images/guided_dreaming.jpg?raw=true" style="max-width: 300px;"/><br/>
 
 command:
 
