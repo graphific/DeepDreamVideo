@@ -35,12 +35,55 @@ or
 
 Let a pretrained deep neural network dream on it frames, one by one, taking each new frame and adding 0-50% of the old frame into it for continuity of the hallucinated artifacts, and go drink your caffe
 
-<pre>python 2_dreaming_time.py [-h] -i INPUT -o OUTPUT [-d] [--gpu GPU]
-                          [-t MODEL_PATH] [-m MODEL_NAME] [-p PREVIEW]
-                          [-oct OCTAVES] [-octs OCTAVESCALE] [-itr ITERATIONS]
-                          [-j JITTER] [-z ZOOM] [-s STEPSIZE] [-b BLEND]
-                          [-l LAYERS [LAYERS ...]] [-gi GUIDE_IMAGE]
-                          [-sf START_FRAME] [-ef END_FRAME]</pre>
+<pre>usage: 2_dreaming_time.py [-h] -i INPUT -o OUTPUT [--gpu GPU] [-t MODEL_PATH]
+                          [-m MODEL_NAME] [-p PREVIEW] [-oct OCTAVES]
+                          [-octs OCTAVESCALE] [-itr ITERATIONS] [-j JITTER]
+                          [-z ZOOM] [-s STEPSIZE] [-b BLEND]
+                          [-l LAYERS [LAYERS ...]] [-v VERBOSE]
+                          [-gi GUIDE_IMAGE] [-sf START_FRAME] [-ef END_FRAME]
+
+Dreaming in videos.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -i INPUT, --input INPUT
+                        Input directory where extracted frames are stored
+  -o OUTPUT, --output OUTPUT
+                        Output directory where processed frames are to be
+                        stored
+  --gpu GPU             Switch for gpu computation.
+  -t MODEL_PATH, --model_path MODEL_PATH
+                        Model directory to use
+  -m MODEL_NAME, --model_name MODEL_NAME
+                        Caffe Model name to use
+  -p PREVIEW, --preview PREVIEW
+                        Preview image width. Default: 0
+  -oct OCTAVES, --octaves OCTAVES
+                        Octaves. Default: 4
+  -octs OCTAVESCALE, --octavescale OCTAVESCALE
+                        Octave Scale. Default: 1.4
+  -itr ITERATIONS, --iterations ITERATIONS
+                        Iterations. Default: 10
+  -j JITTER, --jitter JITTER
+                        Jitter. Default: 32
+  -z ZOOM, --zoom ZOOM  Zoom in Amount. Default: 1
+  -s STEPSIZE, --stepsize STEPSIZE
+                        Step Size. Default: 1.5
+  -b BLEND, --blend BLEND
+                        Blend Amount. Default: "0.5" (constant), or "loop"
+                        (0.5-1.0), or "random"
+  -l LAYERS [LAYERS ...], --layers LAYERS [LAYERS ...]
+                        Array of Layers to loop through. Default: [customloop]
+                        - or choose ie [inception_4c/output] for that single
+                        layer
+  -v VERBOSE, --verbose VERBOSE
+                        verbosity [0-3]
+  -gi GUIDE_IMAGE, --guide_image GUIDE_IMAGE
+                        path to guide image
+  -sf START_FRAME, --start_frame START_FRAME
+                        starting frame nr
+  -ef END_FRAME, --end_frame END_FRAME
+                        end frame nr</pre>
                       
                           
 gpu:
@@ -84,6 +127,16 @@ command:
 
 `python 2_dreaming_time.py -i frames -o processed -l inception_4c/output --guide-image flower.jpg --gpu 0 --start-frame 1 --end-frame 100; python 2_dreaming_time.py -i frames -o processed -l inception_4b/output --guide-image disco.jpg --gpu 0 --start-frame 101 --end-frame 200`
 
+##Blending Options
+The best results come from a well selected blending factor, used to blend each frame into the next, keeping consitancy between the frames and the dreamed up artefacts, but without the added dreamed artefacts overruling the original scene, or in the opposite case, switching too rapidly.
+
+blending can be set by <pre>--blend</pre> and can be a float, default 0.5, "random" (a random float between 0.5 and 1., where 1 means disregarding all info from the old frame and starting from scratch with dreaming up artefacts), and "loop" which loops back and forth from 0.5 to 1.0, as originally done in the Fear and Loathing clip.
+
+Constant (default):
+
+`python 2_dreaming_time.py -i frames -o processed -b 0.5` 
+
+![blend1](http://media.giphy.com/media/3oEdv4yA6MIjpzDP2w/giphy.gif "constant blending")
 
 ##More information:
 
