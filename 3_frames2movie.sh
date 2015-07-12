@@ -8,7 +8,10 @@ fi
 FFMPEG=$(which ffmpeg)
 FFPROBE=$(which ffprobe)
 
-${FFMPEG} -framerate 25 -i "$1/%08d.jpg" -c:v libx264 -vf "fps=25,format=yuv420p" -tune fastdecode -tune zerolatency -profile:v baseline /tmp/tmp.mp4 -y
+FPS=$(${FFPROBE} -show_streams -select_streams v -i "$2"  2>/dev/null | grep "r_frame_rate" | cut -d'=' -f2)
+
+
+${FFMPEG} -framerate ${FPS} -i "$1/%08d.jpg" -c:v libx264 -vf "fps=${FPS},format=yuv420p" -tune fastdecode -tune zerolatency -profile:v baseline /tmp/tmp.mp4 -y
 
 ${FFMPEG} -i "$2" -strict -2 /tmp/original.aac -y
 #${FFMPEG} -i /tmp/original.aac /tmp/music.wav
