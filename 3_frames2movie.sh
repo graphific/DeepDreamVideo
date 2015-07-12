@@ -1,8 +1,14 @@
 #!/bin/bash
-if [ $# -ne 2 ]; then
+if [ $# -ne 3 ]; then
     echo "please provide the directory of the processed frames"
-    echo "./3_frames2movie.sh [frames_directory] [original_video_with_sound]"
+    echo "./3_frames2movie.sh [frames_directory] [original_video_with_sound] [png|jpg]"
     exit 1
+fi
+
+if [ "png" == "$3" ]; then
+    suffix="png"
+else
+    suffix="jpg"
 fi
 
 FFMPEG=$(which ffmpeg)
@@ -11,7 +17,7 @@ FFPROBE=$(which ffprobe)
 FPS=$(${FFPROBE} -show_streams -select_streams v -i "$2"  2>/dev/null | grep "r_frame_rate" | cut -d'=' -f2)
 
 
-${FFMPEG} -framerate ${FPS} -i "$1/%08d.jpg" -c:v libx264 -vf "fps=${FPS},format=yuv420p" -tune fastdecode -tune zerolatency -profile:v baseline /tmp/tmp.mp4 -y
+${FFMPEG} -framerate ${FPS} -i "$1/%08d.${suffix}" -c:v libx264 -vf "fps=${FPS},format=yuv420p" -tune fastdecode -tune zerolatency -profile:v baseline /tmp/tmp.mp4 -y
 
 ${FFMPEG} -i "$2" -strict -2 /tmp/original.aac -y
 #${FFMPEG} -i /tmp/original.aac /tmp/music.wav
