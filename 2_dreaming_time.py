@@ -23,6 +23,12 @@ def showarray(a, fmt='jpeg'):
     PIL.Image.fromarray(a).save(f, fmt)
     display(Image(data=f.getvalue()))
 
+def showarrayHQ(a, fmt='png'):
+    a = np.uint8(np.clip(a, 0, 255))
+    f = StringIO()
+    PIL.Image.fromarray(a).save(f, fmt)
+    display(Image(data=f.getvalue()))
+
 # a couple of utility functions for converting to and from Caffe's input image layout
 def preprocess(net, img):
     return np.float32(np.rollaxis(img, 2)[::-1]) - net.transformer.mean['data']
@@ -96,7 +102,7 @@ def make_step(net, step_size=1.5, end='inception_4c/output', jitter=32, clip=Tru
         bias = net.transformer.mean['data']
         src.data[:] = np.clip(src.data, -bias, 255-bias)
 
-def deepdream(net, base_img, iter_n=10, octave_n=4, octave_scale=1.4, end='inception_4c/output', verbose = 1, clip=True, **step_params):
+def deepdream(net, base_img, image_type, iter_n=10, octave_n=4, octave_scale=1.4, end='inception_4c/output', verbose = 1, clip=True, **step_params):
 
     # prepare base images for all octaves
     octaves = [preprocess(net, base_img)]
@@ -122,7 +128,10 @@ def deepdream(net, base_img, iter_n=10, octave_n=4, octave_scale=1.4, end='incep
             if not clip: # adjust image contrast if clipping is disabled
                 vis = vis * (255.0 / np.percentile(vis, 99.98))
             if verbose == 3:
-                showarray(vis)
+                if image_type == "png"
+                    showarrayHQ(vis)
+                elif image_type == "jpg"
+                    showarray(vis)
             	print(octave, i, end, vis.shape)
                 clear_output(wait=True)
             elif verbose == 2:
@@ -162,7 +171,7 @@ def make_step_guided(net, step_size=1.5, end='inception_4c/output',
         bias = net.transformer.mean['data']
         src.data[:] = np.clip(src.data, -bias, 255-bias)
 
-def deepdream_guided(net, base_img, iter_n=10, octave_n=4, octave_scale=1.4, end='inception_4c/output', clip=True, verbose=1, objective_fn=objective_guide, **step_params):
+def deepdream_guided(net, base_img, image_type, iter_n=10, octave_n=4, octave_scale=1.4, end='inception_4c/output', clip=True, verbose=1, objective_fn=objective_guide, **step_params):
 
     #if objective_fn is None:
     #    objective_fn = objective_L2
@@ -191,7 +200,10 @@ def deepdream_guided(net, base_img, iter_n=10, octave_n=4, octave_scale=1.4, end
             if not clip: # adjust image contrast if clipping is disabled
                 vis = vis*(255.0/np.percentile(vis, 99.98))
             if verbose == 3:
-                showarray(vis)
+               if image_type == "png"
+                   showarrayHQ(vis)
+               elif image_type == "jpg"
+                   showarray(vis)
             	print octave, i, end, vis.shape
                 clear_output(wait=True)
             elif verbose == 2:
@@ -233,7 +245,7 @@ layersloop = ['inception_4c/output', 'inception_4d/output',
               'inception_4e/output', 'inception_4d/output',
               'inception_4c/output']
 
-def main(input, output, gpu, model_path, model_name, preview, octaves, octave_scale, iterations, jitter, zoom, stepsize, blend, layers, guide_image, start_frame, end_frame, verbose):
+def main(input, output, image_type, gpu, model_path, model_name, preview, octaves, octave_scale, iterations, jitter, zoom, stepsize, blend, layers, guide_image, start_frame, end_frame, verbose):
     make_sure_path_exists(input)
     make_sure_path_exists(output)
 
@@ -287,9 +299,9 @@ def main(input, output, gpu, model_path, model_name, preview, octaves, octave_sc
         from IPython.display import clear_output, Image, display
         print("display turned on")
 
-    frame = np.float32(PIL.Image.open(input + '/%08d.jpg' % frame_i))
+    frame = np.float32(PIL.Image.open(input + '/%08d.' + image_type % frame_i))
     if preview is not 0:
-        frame = resizePicture(input + '/%08d.jpg' % frame_i, preview)
+        frame = resizePicture(input + '/%08d.' + image_type % frame_i, preview)
 
     now = time.time()
     
@@ -317,7 +329,7 @@ def main(input, output, gpu, model_path, model_name, preview, octaves, octave_sc
 
             frame = deepdream_guided(net, frame, verbose=verbose, iter_n = iterations, step_size = stepsize, octave_n = octaves, octave_scale = octave_scale, jitter=jitter, end = endparam, objective_fn=objective_guide, guide_features=guide_features,)
 
-        saveframe = output + "/%08d.jpg" % frame_i
+        saveframe = output + "/%08d." + image_type % frame_i
 
         later = time.time()
         difference = int(later - now)
@@ -333,7 +345,7 @@ def main(input, output, gpu, model_path, model_name, preview, octaves, octave_sc
         print '***************************************'
 
         PIL.Image.fromarray(np.uint8(frame)).save(saveframe)
-        newframe = input + "/%08d.jpg" % frame_i
+        newframe = input + "/%08d." + image_type % frame_i
 
         if blend == 0:
             newimg = PIL.Image.open(newframe)
@@ -370,10 +382,14 @@ if __name__ == "__main__":
         help='Output directory where processed frames are to be stored',
         required=True)
     parser.add_argument(
+        '-it','--image_type',
+        help='Specify whether jpg or png ',
+        required=True)
+    parser.add_argument(
         "--gpu",
         default='0',
         help="Switch for gpu computation."
-    ) #int can chose index of gpu, if theres multiple gpus to chose from
+    ) #int can chose index of gpu, if there are multiple gpu's to chose from
     parser.add_argument(
         '-t', '--model_path',
         dest='model_path',
