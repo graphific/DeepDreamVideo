@@ -136,7 +136,8 @@ Constant (default):
 
 `python 2_dreaming_time.py -i frames -o processed -b 0.5` 
 
-![blend1](http://media.giphy.com/media/3oEdv4yA6MIjpzDP2w/giphy.gif "constant blending")
+<img src="http://media.giphy.com/media/3oEdv4yA6MIjpzDP2w/giphy.gif" alt="Blending Constant"/>
+
 
 ##More information:
 
