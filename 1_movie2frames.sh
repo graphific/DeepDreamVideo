@@ -35,7 +35,7 @@ fi
 
 if [ "png" == "$4" ]; then
     PNGCRUSH=$(which pngcrush)
-    if [ ${PNGCRUSH} != "" ]; then
+    if [ "${PNGCRUSH}" != "" ]; then
         for f in $(find "$3" -type f); do
             # using method 115 because on my test material it worked the best
             # if you really have a lot of time on your hands you could use the
@@ -44,5 +44,7 @@ if [ "png" == "$4" ]; then
             ${PNGCRUSH} -ow -m 115 "$f" 2&>1 > /dev/null
             #${PNGCRUSH} -ow -brute "$f" 2&>1 > /dev/null
         done
+    else
+        echo "pngcrush not installed, can't crush the images"
     fi
 fi

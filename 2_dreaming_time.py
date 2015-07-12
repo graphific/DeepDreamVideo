@@ -31,6 +31,7 @@ def showarrayHQ(a, fmt='png'):
 
 # a couple of utility functions for converting to and from Caffe's input image layout
 def preprocess(net, img):
+    #print np.float32(img).shape
     return np.float32(np.rollaxis(img, 2)[::-1]) - net.transformer.mean['data']
 def deprocess(net, img):
     return np.dstack((img + net.transformer.mean['data'])[::-1])
@@ -128,9 +129,9 @@ def deepdream(net, base_img, image_type, iter_n=10, octave_n=4, octave_scale=1.4
             if not clip: # adjust image contrast if clipping is disabled
                 vis = vis * (255.0 / np.percentile(vis, 99.98))
             if verbose == 3:
-                if image_type == "png"
+                if image_type == "png":
                     showarrayHQ(vis)
-                elif image_type == "jpg"
+                elif image_type == "jpg":
                     showarray(vis)
             	print(octave, i, end, vis.shape)
                 clear_output(wait=True)
@@ -200,10 +201,10 @@ def deepdream_guided(net, base_img, image_type, iter_n=10, octave_n=4, octave_sc
             if not clip: # adjust image contrast if clipping is disabled
                 vis = vis*(255.0/np.percentile(vis, 99.98))
             if verbose == 3:
-               if image_type == "png"
-                   showarrayHQ(vis)
-               elif image_type == "jpg"
-                   showarray(vis)
+                if image_type == "png":
+                    showarrayHQ(vis)
+                elif image_type == "jpg":
+                    showarray(vis)
             	print octave, i, end, vis.shape
                 clear_output(wait=True)
             elif verbose == 2:
@@ -216,7 +217,7 @@ def deepdream_guided(net, base_img, image_type, iter_n=10, octave_n=4, octave_sc
 
 def resizePicture(image,width):
 	img = PIL.Image.open(image)
-	basewidth = width
+        basewidth = width
 	wpercent = (basewidth/float(img.size[0]))
 	hsize = int((float(img.size[1])*float(wpercent)))
 	return img.resize((basewidth,hsize), PIL.Image.ANTIALIAS)
@@ -298,10 +299,9 @@ def main(input, output, image_type, gpu, model_path, model_name, preview, octave
     if verbose == 3:
         from IPython.display import clear_output, Image, display
         print("display turned on")
-
-    frame = np.float32(PIL.Image.open(input + '/%08d.' + image_type % frame_i))
+    frame = np.float32(PIL.Image.open(input + '/%08d.%s' % (frame_i, image_type) ))
     if preview is not 0:
-        frame = resizePicture(input + '/%08d.' + image_type % frame_i, preview)
+        frame = np.float32(resizePicture(input + '/%08d.%s' % (frame_i, image_type), preview))
 
     now = time.time()
     
@@ -321,15 +321,15 @@ def main(input, output, image_type, gpu, model_path, model_name, preview, octave
 
         #Choosing between normal dreaming, and guided dreaming
         if guide_image is None:
-            frame = deepdream(net, frame, verbose=verbose, iter_n = iterations, step_size = stepsize, octave_n = octaves, octave_scale = octave_scale, jitter=jitter, end = endparam)
+            frame = deepdream(net, frame, image_type=image_type, verbose=verbose, iter_n = iterations, step_size = stepsize, octave_n = octaves, octave_scale = octave_scale, jitter=jitter, end = endparam)
         else:
             guide = np.float32(PIL.Image.open(guide_image))
             print('Setting up Guide with selected image')
             guide_features = prepare_guide(net,PIL.Image.open(guide_image), end=endparam)
 
-            frame = deepdream_guided(net, frame, verbose=verbose, iter_n = iterations, step_size = stepsize, octave_n = octaves, octave_scale = octave_scale, jitter=jitter, end = endparam, objective_fn=objective_guide, guide_features=guide_features,)
+            frame = deepdream_guided(net, frame, image_type=image_type, verbose=verbose, iter_n = iterations, step_size = stepsize, octave_n = octaves, octave_scale = octave_scale, jitter=jitter, end = endparam, objective_fn=objective_guide, guide_features=guide_features,)
 
-        saveframe = output + "/%08d." + image_type % frame_i
+        saveframe = output + "/%08d.%s" % (frame_i, image_type)
 
         later = time.time()
         difference = int(later - now)
@@ -345,7 +345,7 @@ def main(input, output, image_type, gpu, model_path, model_name, preview, octave
         print '***************************************'
 
         PIL.Image.fromarray(np.uint8(frame)).save(saveframe)
-        newframe = input + "/%08d." + image_type % frame_i
+        newframe = input + "/%08d.%s" % (frame_i,image_type)
 
         if blend == 0:
             newimg = PIL.Image.open(newframe)
@@ -485,7 +485,7 @@ if __name__ == "__main__":
         print("or download one with ./caffe_dir/scripts/download_model_binary.py caffe_dir/models/bvlc_googlenet")
         sys.exit(0)
 
-    main(args.input, args.output, args.gpu, args.model_path, args.model_name, args.preview, args.octaves, args.octavescale, args.iterations, args.jitter, args.zoom, args.stepsize, args.blend, args.layers, args.guide_image, args.start_frame, args.end_frame, args.verbose)
+    main(args.input, args.output, args.image_type, args.gpu, args.model_path, args.model_name, args.preview, args.octaves, args.octavescale, args.iterations, args.jitter, args.zoom, args.stepsize, args.blend, args.layers, args.guide_image, args.start_frame, args.end_frame, args.verbose)
 
 
 
