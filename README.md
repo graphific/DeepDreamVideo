@@ -25,13 +25,17 @@ A good overview (constantly being updated) on which software libraries to instal
 
 ##Usage:
 
-Extract 25 frames a second from the source movie
+Extract frames from the source movie
 
-`./1_movie2frames.sh ffmpeg [movie.mp4] [directory]`
+`./1_movie2frames.sh ffmpeg [original_video] [frames_directory]`
 
 or
 
-`./1_movie2frames.sh avconf [movie.mp4] [directory]`
+`./1_movie2frames.sh avconv [original_video] [frames_directory]`
+
+or 
+
+`./1_movie2frames.sh mplayer [original_video] [frames_directory]`
 
 Let a pretrained deep neural network dream on it frames, one by one, taking each new frame and adding 0-50% of the old frame into it for continuity of the hallucinated artifacts, and go drink your caffe
 
@@ -91,31 +95,31 @@ optional arguments:
 
 gpu:
 
-`python 2_dreaming_time.py -i frames -o processed --gpu 0`
+`python 2_dreaming_time.py -i frames_directory -o processed_frames_dir --gpu 0`
 
 cpu:
 
-`python 2_dreaming_time.py -i frames -o processed`
+`python 2_dreaming_time.py -i frames_directory -o processed_frames_dir`
 
 different models can be loaded with:
 
-`python 2_dreaming_time.py -i frames -o processed --model_path ../caffe/models/Places205-CNN/ --model_name Places205.caffemodel --gpu 0`
+`python 2_dreaming_time.py -i frames_directory -o processed_frames_dir --model_path ../caffe/models/Places205-CNN/ --model_name Places205.caffemodel --gpu 0`
 
 or
 
-`python 2_dreaming_time.py -i frames -o processed --model_path ../caffe/models/bvlc_googlenet/ --model_name bvlc_googlenet.caffemodel --gpu 0`
+`python 2_dreaming_time.py -i frames_directory -o processed_frames_dir --model_path ../caffe/models/bvlc_googlenet/ --model_name bvlc_googlenet.caffemodel --gpu 0`
 
 (again eat your heart out, Not a free lunch, but free models are [here](https://github.com/BVLC/caffe/wiki/Model-Zoo))
 
 and sticking to one specific layer:
 
-`python 2_dreaming_time.py -i frames -o processed -l inception_4c/output --gpu 0`
+`python 2_dreaming_time.py -i frames_directory -o processed_frames_dir -l inception_4c/output --gpu 0`
 
 (**don't forget the --gpu 0 flag if you got a gpu to run on**)
 
 Once enough frames are processed (the script will cut the audio to the needed length automatically) or once all frames are done, put the frames + audio back together:
 
-`./3_frames2movie.sh [frames_directory] [original_video_with_sound]`
+`./3_frames2movie.sh [processed_frames_dir] [original_video]`
 
 ##Guided Dreaming
 
@@ -123,8 +127,11 @@ Once enough frames are processed (the script will cut the audio to the needed le
 
 command:
 
-`python 2_dreaming_time.py -i frames -o processed -l inception_4c/output --guide-image flower.jpg --gpu 0`
+`python 2_dreaming_time.py -i frames_directory -o processed_frames_dir -l inception_4c/output --guide-image image_file.jpg --gpu 0`
 
+or
+
+`python 2_dreaming_time.py -i frames_directory -o processed_frames_dir -l inception_4c/output --guide-image image_file.jpg` if you're running cpu mode
 
 ##Batch Processing with different parameters
 
@@ -137,19 +144,19 @@ blending can be set by <pre>--blend</pre> and can be a float, default 0.5, "rand
 
 Constant (default):
 
-`python 2_dreaming_time.py -i frames -o processed -b 0.5`
+`python 2_dreaming_time.py -i frames_directory -o processed_frames_dir -b 0.5`
 
 <img src="images/blend_constant.gif?raw=true" style="max-width: 300px;"/><br/>
 
 Loop:
 
-`python 2_dreaming_time.py -i frames -o processed -b loop`
+`python 2_dreaming_time.py -i frames_directory -o processed_frames_dir -b loop`
 
 <img src="images/blend_loop.gif?raw=true" style="max-width: 300px;"/><br/>
 
 Random:
 
-`python 2_dreaming_time.py -i frames -o processed -b random`
+`python 2_dreaming_time.py -i frames_directory -o processed_frames_dir -b random`
 
 <img src="images/blend_random.gif?raw=true" style="max-width: 300px;"/><br/>
 
