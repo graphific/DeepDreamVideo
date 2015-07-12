@@ -116,7 +116,8 @@ Once enough frames are processed (the script will cut the audio to the needed le
 
 ##Guided Dreaming
 
-<img src="http://i.imgur.com/hQ0fzM1.jpg" alt="Guided Dreaming" style="width: 200px;" alt="Guided Dreaming"/>
+![guideddreaming](http://i.imgur.com/hQ0fzM1.jpg "Guided Dreaming")
+
 
 command:
 
@@ -136,8 +137,21 @@ Constant (default):
 
 `python 2_dreaming_time.py -i frames -o processed -b 0.5` 
 
-<img src="http://media.giphy.com/media/3oEdv4yA6MIjpzDP2w/giphy.gif" alt="Blending Constant"/>
+![blend1](http://media.giphy.com/media/3oEdv4yA6MIjpzDP2w/giphy.gif "Blend Constant")
 
+
+Loop:
+
+`python 2_dreaming_time.py -i frames -o processed -b loop` 
+
+![blend2](http://giant.gfycat.com/ArcticBeautifulFirecrest.gif "Blend Loop")
+
+
+Random:
+
+`python 2_dreaming_time.py -i frames -o processed -b random` 
+
+![blend3](http://giant.gfycat.com/FavorableFittingCopperbutterfly.gif "Blend Random")
 
 ##More information:
 
