@@ -83,9 +83,10 @@ optional arguments:
   -sf START_FRAME, --start_frame START_FRAME
                         starting frame nr
   -ef END_FRAME, --end_frame END_FRAME
-                        end frame nr</pre>
-                      
-                          
+                        end frame nr
+</pre>
+
+
 gpu:
 
 `python 2_dreaming_time.py -i frames -o processed --gpu 0`
@@ -116,8 +117,7 @@ Once enough frames are processed (the script will cut the audio to the needed le
 
 ##Guided Dreaming
 
-![guideddreaming](http://i.imgur.com/hQ0fzM1.jpg "Guided Dreaming")
-
+<img src="images/guided_dreaming.jpg.jpg?raw=true" style="max-width: 300px;"/><br/>
 
 command:
 
@@ -135,23 +135,22 @@ blending can be set by <pre>--blend</pre> and can be a float, default 0.5, "rand
 
 Constant (default):
 
-`python 2_dreaming_time.py -i frames -o processed -b 0.5` 
+`python 2_dreaming_time.py -i frames -o processed -b 0.5`
 
-![blend1](http://media.giphy.com/media/3oEdv4yA6MIjpzDP2w/giphy.gif "Blend Constant")
-
+<img src="images/blend_constant.gif?raw=true" style="max-width: 300px;"/><br/>
 
 Loop:
 
-`python 2_dreaming_time.py -i frames -o processed -b loop` 
+`python 2_dreaming_time.py -i frames -o processed -b loop`
 
-![blend2](http://giant.gfycat.com/ArcticBeautifulFirecrest.gif "Blend Loop")
-
+<img src="images/blend_loop.gif?raw=true" style="max-width: 300px;"/><br/>
 
 Random:
 
-`python 2_dreaming_time.py -i frames -o processed -b random` 
+`python 2_dreaming_time.py -i frames -o processed -b random`
 
-![blend3](http://giant.gfycat.com/FavorableFittingCopperbutterfly.gif "Blend Random")
+<img src="images/blend_random.gif?raw=true" style="max-width: 300px;"/><br/>
+
 
 ##More information:
 
