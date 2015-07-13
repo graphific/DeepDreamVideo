@@ -387,7 +387,7 @@ if __name__ == "__main__":
         required=True)
     parser.add_argument(
         "--gpu",
-        default='0',
+        default= None,
         help="Switch for gpu computation."
     ) #int can chose index of gpu, if there are multiple gpu's to chose from
     parser.add_argument(
