@@ -22,6 +22,17 @@ Advise also at https://github.com/graphific/DeepDreamVideo/wiki
 
 A good overview (constantly being updated) on which software libraries to install & list of web resources/howto is at reddit: https://www.reddit.com/r/deepdream/comments/3cawxb/what_are_deepdream_images_how_do_i_make_my_own/
 
+##On using a CPU as opposed to GPU
+As there's been a lot of interest in using this code, and deepdream in general, on machines without a decent graphic card (GPU), heres a minor benchmark to let you decide if its worth the time on your pc:<br/>
+(note that the timing also depends on how far down in the layers of the network you want to go: the deeper, the longer time it takes)<br/>
+<br/>
+GPU K20 (amazon ec2 g2.2xlarge, 2x 4Gb GPU):<br/>
+1 picture, 540x360px = 1 second = 60 min for 2 min video (3600 frames/framerate 30)<br/>
+1 picture, 1024x768px = 3 seconds = 3h for 2 min video (3600 frames/framerate 30)<br/>
+<br/>
+CPU (amazon ec2 g2.2xlarge,  Intel Xeon E5-2670 (Sandy Bridge) Processor, 8 cores, 2.6 GHz, 3.3 GHz turbo ): <br/>
+1 picture, 540x360px = 45 seconds = 1d 21h for 2 min video (3600 frames/framerate 30)<br/>
+1 picture, 1024x768px = 144 seconds = 6d for 2 min video (3600 frames/framerate 30 for 2 min video)<br/>
 
 ##Usage:
 
