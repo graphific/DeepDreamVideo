@@ -32,7 +32,7 @@ GPU K20 (amazon ec2 g2.2xlarge, 2x 4Gb GPU):<br/>
 <br/>
 CPU (amazon ec2 g2.2xlarge,  Intel Xeon E5-2670 (Sandy Bridge) Processor, 8 cores, 2.6 GHz, 3.3 GHz turbo ): <br/>
 1 picture, 540x360px = 45 seconds = 1d 21h for 2 min video (3600 frames/framerate 30)<br/>
-1 picture, 1024x768px = 144 seconds = 6d for 2 min video (3600 frames/framerate 30 for 2 min video)<br/>
+1 picture, 1024x768px = 144 seconds = 6d for 2 min video (3600 frames/framerate 30)<br/>
 
 ##Usage:
 
