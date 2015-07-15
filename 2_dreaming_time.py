@@ -362,7 +362,7 @@ def main(input, output, image_type, gpu, model_path, model_name, preview, octave
                 if blend_forward: blend_at += blend_step
                 else: blend_at -= blend_step
                 blendval = blend_at
-            else: blendval = blend
+            else: blendval = float(blend)
             frame = morphPicture(saveframe,newframe,blendval,preview)
 
         frame = np.float32(frame)
