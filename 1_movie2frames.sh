@@ -19,7 +19,7 @@ fi
 
 if [ "avconv" == "$1" ]; then
     AVCONV=$(which avconv)
-    FPS=$($AVCONV -i "$2" 2>&1 | sed -n "s/.*, \(.*\) fp.*/\1/p") # this line is not tested cuz i don't have avconv :(
+    FPS=$($AVCONV -i "$2" 2>&1 | sed -n "s/.*, \(.*\) fp.*/\1/p")
     $AVCONV -i "$2" -vsync 1 -r ${FPS} -an -y -qscale 0 "${OUTFILES}"
 elif [ "mplayer" == "$1" ]; then
     MPLAYER=$(which mplayer)
