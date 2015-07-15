@@ -272,6 +272,8 @@ def main(input, output, image_type, gpu, model_path, model_name, preview, octave
         frame_i = int(start_frame)
     if not end_frame is None:
     	nrframes = int(end_frame)+1
+    else:
+        nrframes = nrframes+1
 
     #Load DNN
     net_fn   = model_path + 'deploy.prototxt'
@@ -336,7 +338,7 @@ def main(input, output, image_type, gpu, model_path, model_name, preview, octave
         # Stats (stolen + adapted from Samim: https://github.com/samim23/DeepDreamAnim/blob/master/dreamer.py)
         print '***************************************'
         print 'Saving Image As: ' + saveframe
-        print 'Frame ' + str(i) + ' of ' + str(nrframes)
+        print 'Frame ' + str(i) + ' of ' + str(nrframes-1)
         print 'Frame Time: ' + str(difference) + 's'
         timeleft = difference * (nrframes - frame_i)
         m, s = divmod(timeleft, 60)
