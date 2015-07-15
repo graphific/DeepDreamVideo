@@ -6,7 +6,8 @@ if [ $# -ne 4 ]; then
 fi
 
 mkdir -p "$3"
-rm -R "$3/*"
+echo "Removing files in $3/*"
+rm -R "$3/"*
 
 if [ "png" == "$4" ]; then
     OUTFILES="$3/%08d.png"
@@ -18,7 +19,7 @@ fi
 
 if [ "avconv" == "$1" ]; then
     AVCONV=$(which avconv)
-    FPS=$($AVCONV -i filename 2>&1 | sed -n "s/.*, \(.*\) fp.*/\1/p") # this line is not tested cuz i don't have avconv :(
+    FPS=$($AVCONV -i "$2" 2>&1 | sed -n "s/.*, \(.*\) fp.*/\1/p") # this line is not tested cuz i don't have avconv :(
     $AVCONV -i "$2" -vsync 1 -r ${FPS} -an -y -qscale 0 "${OUTFILES}"
 elif [ "mplayer" == "$1" ]; then
     MPLAYER=$(which mplayer)
@@ -29,7 +30,7 @@ else
     FFMPEG=$(which ffmpeg)
     #Same happens with FFMPEG as MPLAYER, fps is not needed for video to frame convertion.
     #FFPROBE=$(which ffprobe)
-    #FPS=$($FFPROBE -show_streams -select_streams v -i "$2"  2>/dev/null | grep "r_frame_rate" | cut -d'=' -f2)
+    #FPS=$($FFPROBE -show_streams -select_streams v -i "$2" 2>/dev/null | grep "r_frame_rate" | cut -d'=' -f2)
     $FFMPEG -i "$2" -f image2 "${OUTFILES}"
 fi
 
@@ -41,8 +42,8 @@ if [ "png" == "$4" ]; then
             # if you really have a lot of time on your hands you could use the
             # second version commented out
             echo "PNGCRUSHING: $f"
-            ${PNGCRUSH} -ow -m 115 "$f" 2&>1 > /dev/null
-            #${PNGCRUSH} -ow -brute "$f" 2&>1 > /dev/null
+            ${PNGCRUSH} -ow -m 115 "$f" >/dev/null 2>&1
+            #${PNGCRUSH} -ow -brute "$f" >/dev/null 2>&1
         done
     else
         echo "pngcrush not installed, can't crush the images"
