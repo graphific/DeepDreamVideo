@@ -6,6 +6,7 @@ import os, os.path
 import errno
 import sys
 import time
+import subprocess
 from random import randint
 
 from cStringIO import StringIO
@@ -16,6 +17,9 @@ from google.protobuf import text_format
 
 import caffe
 
+def extractVideo(inputdir, outputdir):
+    print subprocess.Popen('ffmpeg -i ' + inputdir + ' -f image2 ' + outputdir + '/%08d.png', shell=True,
+                           stdout=subprocess.PIPE).stdout.read()
 
 def showarray(a, fmt='jpeg'):
     a = np.uint8(np.clip(a, 0, 255))
@@ -468,6 +472,11 @@ if __name__ == "__main__":
         type=int,
     	required=False,
     	help="end frame nr")
+    parser.add_argument(
+	'-e', '--extract',
+	type=int,
+	required=False,
+	help="Extract frames from video")
 
     args = parser.parse_args()
 
@@ -486,8 +495,12 @@ if __name__ == "__main__":
         print("Please set the model_name to a correct caffe model")
         print("or download one with ./caffe_dir/scripts/download_model_binary.py caffe_dir/models/bvlc_googlenet")
         sys.exit(0)
+        
+    if args.extract is 1:
+        extractVideo(args.input, args.output)
 
-    main(args.input, args.output, args.image_type, args.gpu, args.model_path, args.model_name, args.preview, args.octaves, args.octavescale, args.iterations, args.jitter, args.zoom, args.stepsize, args.blend, args.layers, args.guide_image, args.start_frame, args.end_frame, args.verbose)
+    else:
+    	main(args.input, args.output, args.image_type, args.gpu, args.model_path, args.model_name, args.preview, args.octaves, args.octavescale, args.iterations, args.jitter, args.zoom, args.stepsize, args.blend, args.layers, args.guide_image, args.start_frame, args.end_frame, args.verbose)
 
 
 
