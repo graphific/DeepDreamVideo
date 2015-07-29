@@ -31,7 +31,7 @@ else
     #Same happens with FFMPEG as MPLAYER, fps is not needed for video to frame convertion.
     #FFPROBE=$(which ffprobe)
     #FPS=$($FFPROBE -show_streams -select_streams v -i "$2" 2>/dev/null | grep "r_frame_rate" | cut -d'=' -f2)
-    $FFMPEG -i "$2" -f image2 "${OUTFILES}"
+    "$FFMPEG" -i "$2" -f image2 "${OUTFILES}"
 fi
 
 if [ "png" == "$4" ]; then
