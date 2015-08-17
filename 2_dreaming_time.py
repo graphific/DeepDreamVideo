@@ -283,6 +283,14 @@ def main(input, output, image_type, gpu, model_path, model_name, preview, octave
     net_fn   = model_path + 'deploy.prototxt'
     param_fn = model_path + model_name #'bvlc_googlenet.caffemodel'
 
+    if gpu is None:
+        print("SHITTTTTTTTTTTTTT You're running CPU man =D")
+    else:
+        caffe.set_mode_gpu()
+        caffe.set_device(int(args.gpu))
+        print("GPU mode [device id: %s]" % args.gpu)
+        print("using GPU, but you'd still better make a cup of coffee")
+
     # Patching model to be able to compute gradients.
     # Note that you can also manually add "force_backward: true" line to "deploy.prototxt".
     model = caffe.io.caffe_pb2.NetParameter()
@@ -293,14 +301,6 @@ def main(input, output, image_type, gpu, model_path, model_name, preview, octave
     net = caffe.Classifier('tmp.prototxt', param_fn,
                            mean = np.float32([104.0, 116.0, 122.0]), # ImageNet mean, training set dependent
                            channel_swap = (2,1,0)) # the reference model has channels in BGR order instead of RGB
-
-    if gpu is None:
-        print("SHITTTTTTTTTTTTTT You're running CPU man =D")
-    else:
-        caffe.set_mode_gpu()
-        caffe.set_device(int(args.gpu))
-        print("GPU mode [device id: %s]" % args.gpu)
-        print("using GPU, but you'd still better make a cup of coffee")
 
     if verbose == 3:
         from IPython.display import clear_output, Image, display
