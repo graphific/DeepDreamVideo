@@ -130,7 +130,7 @@ and sticking to one specific layer:
 
 Once enough frames are processed (the script will cut the audio to the needed length automatically) or once all frames are done, put the frames + audio back together:
 
-`./3_frames2movie.sh [processed_frames_dir] [original_video] [png / jpg]`
+`./3_frames2movie.sh [ffmpeg / avconv / mplayer] [processed_frames_dir] [original_video] [png / jpg]`
 
 ##Guided Dreaming
 
