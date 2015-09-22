@@ -137,7 +137,7 @@ def deepdream(net, base_img, image_type, iter_n=10, octave_n=4, octave_scale=1.4
                     showarrayHQ(vis)
                 elif image_type == "jpg":
                     showarray(vis)
-            	print(octave, i, end, vis.shape)
+                print(octave, i, end, vis.shape)
                 clear_output(wait=True)
             elif verbose == 2:
                 print(octave, i, end, vis.shape)
@@ -209,7 +209,7 @@ def deepdream_guided(net, base_img, image_type, iter_n=10, octave_n=4, octave_sc
                     showarrayHQ(vis)
                 elif image_type == "jpg":
                     showarray(vis)
-            	print octave, i, end, vis.shape
+                print octave, i, end, vis.shape
                 clear_output(wait=True)
             elif verbose == 2:
                 print octave, i, end, vis.shape
@@ -220,18 +220,18 @@ def deepdream_guided(net, base_img, image_type, iter_n=10, octave_n=4, octave_sc
     return deprocess(net, src.data[0])
 
 def resizePicture(image,width):
-	img = PIL.Image.open(image)
+    img = PIL.Image.open(image)
         basewidth = width
-	wpercent = (basewidth/float(img.size[0]))
-	hsize = int((float(img.size[1])*float(wpercent)))
-	return img.resize((basewidth,hsize), PIL.Image.ANTIALIAS)
+    wpercent = (basewidth/float(img.size[0]))
+    hsize = int((float(img.size[1])*float(wpercent)))
+    return img.resize((basewidth,hsize), PIL.Image.ANTIALIAS)
 
 def morphPicture(filename1,filename2,blend,width):
-	img1 = PIL.Image.open(filename1)
-	img2 = PIL.Image.open(filename2)
-	if width is not 0:
-	    img2 = resizePicture(filename2,width)
-	return PIL.Image.blend(img1, img2, blend)
+    img1 = PIL.Image.open(filename1)
+    img2 = PIL.Image.open(filename2)
+    if width is not 0:
+        img2 = resizePicture(filename2,width)
+    return PIL.Image.blend(img1, img2, blend)
 
 def make_sure_path_exists(path):
     '''
@@ -271,11 +271,11 @@ def main(input, output, image_type, gpu, model_path, model_name, preview, octave
     if verbose is None: verbose = 1
     if layers is None: layers = 'customloop' #['inception_4c/output']
     if start_frame is None:
-    	frame_i = 1
+        frame_i = 1
     else:
         frame_i = int(start_frame)
     if not end_frame is None:
-    	nrframes = int(end_frame)+1
+        nrframes = int(end_frame)+1
     else:
         nrframes = nrframes+1
 
@@ -364,7 +364,7 @@ def main(input, output, image_type, gpu, model_path, model_name, preview, octave
         else:
 
             if blend == 'random':
-            	blendval=randint(5,10)/10.
+                blendval=randint(5,10)/10.
             elif blend == 'loop':
                 if blend_at > 1 - blend_step: blend_forward = False
                 elif blend_at <= 0.5: blend_forward = True
@@ -462,24 +462,24 @@ if __name__ == "__main__":
         required=False,
         help="verbosity [0-3]")
     parser.add_argument(
-    	'-gi', '--guide_image',
-    	required=False,
-    	help="path to guide image")
+        '-gi', '--guide_image',
+        required=False,
+        help="path to guide image")
     parser.add_argument(
-    	'-sf', '--start_frame',
+        '-sf', '--start_frame',
         type=int,
-    	required=False,
-    	help="starting frame nr")
+        required=False,
+        help="starting frame nr")
     parser.add_argument(
-    	'-ef', '--end_frame',
+        '-ef', '--end_frame',
         type=int,
-    	required=False,
-    	help="end frame nr")
+        required=False,
+        help="end frame nr")
     parser.add_argument(
-	'-e', '--extract',
-	type=int,
-	required=False,
-	help="Extract frames from video")
+    '-e', '--extract',
+    type=int,
+    required=False,
+    help="Extract frames from video")
 
     args = parser.parse_args()
 
@@ -503,4 +503,4 @@ if __name__ == "__main__":
         extractVideo(args.input, args.output)
 
     else:
-    	main(args.input, args.output, args.image_type, args.gpu, args.model_path, args.model_name, args.preview, args.octaves, args.octavescale, args.iterations, args.jitter, args.zoom, args.stepsize, args.blend, args.layers, args.guide_image, args.start_frame, args.end_frame, args.verbose)
+        main(args.input, args.output, args.image_type, args.gpu, args.model_path, args.model_name, args.preview, args.octaves, args.octavescale, args.iterations, args.jitter, args.zoom, args.stepsize, args.blend, args.layers, args.guide_image, args.start_frame, args.end_frame, args.verbose)
