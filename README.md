@@ -44,7 +44,7 @@ or
 
 `./1_movie2frames.sh avconv [original_video] [frames_directory] [png / jpg]`
 
-or 
+or
 
 `./1_movie2frames.sh mplayer [original_video] [frames_directory] [png / jpg]`
 

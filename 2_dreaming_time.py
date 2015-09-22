@@ -311,7 +311,7 @@ def main(input, output, image_type, gpu, model_path, model_name, preview, octave
 
     now = time.time()
     totaltime = 0
-    
+
     if blend == 'loop':
         blend_forward = True
         blend_at = 0.4
@@ -347,7 +347,7 @@ def main(input, output, image_type, gpu, model_path, model_name, preview, octave
         print 'Saving Image As: ' + saveframe
         print 'Frame ' + str(i) + ' of ' + str(nrframes-1)
         print 'Frame Time: ' + str(difference) + 's'
-        timeleft = avgtime * ((nrframes-1) - frame_i)        
+        timeleft = avgtime * ((nrframes-1) - frame_i)
         m, s = divmod(timeleft, 60)
         h, m = divmod(m, 60)
         print 'Estimated Total Time Remaining: ' + str(timeleft) + 's (' + "%d:%02d:%02d" % (h, m, s) + ')'
@@ -362,7 +362,7 @@ def main(input, output, image_type, gpu, model_path, model_name, preview, octave
                 newimg = resizePicture(newframe,preview)
             frame = newimg
         else:
-       
+
             if blend == 'random':
             	blendval=randint(5,10)/10.
             elif blend == 'loop':
@@ -498,12 +498,9 @@ if __name__ == "__main__":
         print("Please set the model_name to a correct caffe model")
         print("or download one with ./caffe_dir/scripts/download_model_binary.py caffe_dir/models/bvlc_googlenet")
         sys.exit(0)
-        
+
     if args.extract is 1:
         extractVideo(args.input, args.output)
 
     else:
     	main(args.input, args.output, args.image_type, args.gpu, args.model_path, args.model_name, args.preview, args.octaves, args.octavescale, args.iterations, args.jitter, args.zoom, args.stepsize, args.blend, args.layers, args.guide_image, args.start_frame, args.end_frame, args.verbose)
-
-
-
