@@ -14,8 +14,10 @@ import numpy as np
 import scipy.ndimage as nd
 import PIL.Image
 from google.protobuf import text_format
+from IPython.display import clear_output, Image, display
 
 import caffe
+caffe.set_mode_gpu()
 
 def extractVideo(inputdir, outputdir):
     print subprocess.Popen('ffmpeg -i ' + inputdir + ' -f image2 ' + outputdir + '/%08d.png', shell=True,
