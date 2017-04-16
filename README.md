@@ -18,11 +18,11 @@ All single processed + unprocessed frames are also at [github](https://github.co
 
 Advise also at https://github.com/graphific/DeepDreamVideo/wiki
 
-##INSTALL Dependencies
+## Install Dependencies
 
 A good overview (constantly being updated) on which software libraries to install & list of web resources/howto is at reddit: https://www.reddit.com/r/deepdream/comments/3cawxb/what_are_deepdream_images_how_do_i_make_my_own/
 
-##On using a CPU as opposed to GPU
+## Using a CPU as opposed to GPU
 As there's been a lot of interest in using this code, and deepdream in general, on machines without a decent graphic card (GPU), heres a minor benchmark to let you decide if its worth the time on your pc:<br/>
 (note that the timing also depends on how far down in the layers of the network you want to go: the deeper, the longer time it takes)<br/>
 <br/>
@@ -34,7 +34,7 @@ CPU (amazon ec2 g2.2xlarge,  Intel Xeon E5-2670 (Sandy Bridge) Processor, 8 core
 1 picture, 540x360px = 45 seconds = 1d 21h for 2 min video (3600 frames/framerate 30)<br/>
 1 picture, 1024x768px = 144 seconds = 6d for 2 min video (3600 frames/framerate 30)<br/>
 
-##Usage:
+## Usage
 
 Extract frames from the source movie in the selected format (png or jpg).
 
@@ -132,7 +132,7 @@ Once enough frames are processed (the script will cut the audio to the needed le
 
 `./3_frames2movie.sh [ffmpeg / avconv / mplayer] [processed_frames_dir] [original_video] [png / jpg]`
 
-##Guided Dreaming
+## Guided Dreaming
 
 <img src="images/guided_dreaming.jpg?raw=true" style="max-width: 300px;"/><br/>
 
@@ -144,11 +144,11 @@ or
 
 `python 2_dreaming_time.py -i frames_directory -o processed_frames_dir -l inception_4c/output --guide-image image_file.jpg` if you're running cpu mode
 
-##Batch Processing with different parameters
+## Batch Processing with different parameters
 
 `python 2_dreaming_time.py -i frames -o processed -l inception_4c/output --guide-image flower.jpg --gpu 0 --start-frame 1 --end-frame 100; python 2_dreaming_time.py -i frames -o processed -l inception_4b/output --guide-image disco.jpg --gpu 0 --start-frame 101 --end-frame 200`
 
-##Blending Options
+## Blending Options
 The best results come from a well selected blending factor, used to blend each frame into the next, keeping consitancy between the frames and the dreamed up artefacts, but without the added dreamed artefacts overruling the original scene, or in the opposite case, switching too rapidly.
 
 blending can be set by <pre>--blend</pre> and can be a float, default 0.5, "random" (a random float between 0.5 and 1., where 1 means disregarding all info from the old frame and starting from scratch with dreaming up artefacts), and "loop" which loops back and forth from 0.5 to 1.0, as originally done in the Fear and Loathing clip.
@@ -172,7 +172,7 @@ Random:
 <img src="images/blend_random.gif?raw=true" style="max-width: 300px;"/><br/>
 
 
-##More information:
+## More information
 
 This repo implements a deep neural network hallucinating Fear & Loathing in Las Vegas. Visualizing the internals of a deep net we let it develop further what it think it sees.
 
@@ -185,7 +185,7 @@ Code:
 - https://github.com/google/deepdream
 
 
-## parameters used (and useful to play with):
+## Parameters used (and useful to play with)
 
 - network: standard reference GoogLeNet model trained on ImageNet from the Caffe Model Zoo (https://github.com/BVLC/caffe/wiki/Model-Zoo)
 
@@ -200,12 +200,12 @@ Code:
 - every next unprocessed frame in the movie clip is blended with the previous processed frame before being "dreamed" on, moving the alpha from 0.5 to 1 and back again (so 50% previous image net created, 50% the movie frame, to taking 100% of the movie frame only). This takes care of "overfitting" on the frames and makes sure we don't iteratively build more and more "hallucinations" of the net and move away from the original movie clip.
 
 
-## An investigation of using the MIT Places trained CNN (mainly landscapes):
+## An investigation of using the MIT Places trained CNN (mainly landscapes)
 
 https://www.youtube.com/watch?v=6IgbMiEaFRY
 
 
-## Installing DeepDream:
+## Installing DeepDream
 
 - original Google code is relatively straightforward to use: https://github.com/google/deepdream/blob/master/dream.ipynb
 
