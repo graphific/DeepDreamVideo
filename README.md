@@ -1,6 +1,8 @@
 # DeepDreamVideo
 Implementing **#deepdream** on video
-
+# 
+        DeepDreamVideo/images/guided_dreaming.jpg
+      Veneno.roslyndebugger.md
 **Creative Request**
 
 It would be very helpful for other deepdream researchers, if you could **include the used parameters in the description of your youtube videos**. You can find the parameters in the image filenames.
